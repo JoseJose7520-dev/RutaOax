@@ -38,12 +38,23 @@ export default function AsignarPanel({ seleccionados, onAsignado }) {
     cargarListas();
   }, [cargarListas]);
 
-  const vehiculo = vehiculos.find((v) => String(v.id) === vehiculoId);
   const repartidor = repartidores.find((r) => String(r.id) === repartidorId);
+  const vehiculoDeLaRuta = repartidor?.vehiculoId ? vehiculos.find((v) => v.id === repartidor.vehiculoId) : null;
+  const vehiculosLibres = vehiculos.filter((v) => v.repartidorId == null);
+  const opcionesVehiculo = vehiculoDeLaRuta ? [vehiculoDeLaRuta] : vehiculosLibres;
+  const vehiculo = vehiculos.find((v) => String(v.id) === vehiculoId);
   const cupo = vehiculo ? vehiculo.cupoLibre : null;
   const excede = cupo !== null && seleccionados.length > cupo;
   const fechaPasada = fecha < hoyIso();
   const puedeAsignar = seleccionados.length > 0 && repartidor && vehiculo && !excede && !fechaPasada && !asignando;
+
+  const elegirRepartidor = (e) => {
+    const id = e.target.value;
+    setRepartidorId(id);
+    const elegido = repartidores.find((r) => String(r.id) === id);
+    if (elegido?.vehiculoId) setVehiculoId(String(elegido.vehiculoId));
+    else if (vehiculo && vehiculo.repartidorId != null) setVehiculoId('');
+  };
 
   const asignar = async () => {
     setAsignando(true);
@@ -75,25 +86,29 @@ export default function AsignarPanel({ seleccionados, onAsignado }) {
         onChange={(e) => setFecha(e.target.value)} error={fechaPasada ? 'La fecha no puede ser anterior a hoy' : ''} />
       {errorListas ? <ErrorRed mensaje={errorListas} onReintentar={cargarListas} /> : null}
       <Field as="select" label="Repartidor" name="repartidor" value={repartidorId} disabled={cargando}
-        onChange={(e) => setRepartidorId(e.target.value)}>
-        <option value="">{repartidores.length ? 'Elige un repartidor' : 'No hay repartidores libres ese día'}</option>
+        onChange={elegirRepartidor}>
+        <option value="">{repartidores.length ? 'Elige un repartidor' : 'No hay repartidores disponibles ese día'}</option>
         {repartidores.map((r) => (
-          <option key={r.id} value={r.id}>{r.nombre}</option>
+          <option key={r.id} value={r.id}>
+            {r.nombre}
+            {r.paradas > 0 ? ` · ya tiene ruta (${r.paradas} ${r.paradas === 1 ? 'parada' : 'paradas'})` : ''}
+          </option>
         ))}
       </Field>
-      <Field as="select" label="Vehículo" name="vehiculo" value={vehiculoId} disabled={cargando}
+      <Field as="select" label="Vehículo" name="vehiculo" value={vehiculoId} disabled={cargando || Boolean(vehiculoDeLaRuta)}
         onChange={(e) => setVehiculoId(e.target.value)}>
-        <option value="">{vehiculos.length ? 'Elige un vehículo' : 'No hay vehículos libres ese día'}</option>
-        {vehiculos.map((v) => (
+        <option value="">{opcionesVehiculo.length ? 'Elige un vehículo' : 'No hay vehículos disponibles ese día'}</option>
+        {opcionesVehiculo.map((v) => (
           <option key={v.id} value={v.id}>
             {ETIQUETA_TIPO_VEHICULO[v.tipo]} {v.placa} · cupo {v.cupoLibre}
           </option>
         ))}
       </Field>
+      {vehiculoDeLaRuta ? <small>Se usará el vehículo que ya tiene en su ruta de ese día.</small> : null}
       {vehiculo ? (
         <div className={`aviso ${excede ? 'alerta' : ''}`}>
           <div className="cupo">
-            <span>Cupo del vehículo</span>
+            <span>Cupo restante del vehículo</span>
             <strong>{cupo} pedidos</strong>
           </div>
           <div className="cupo">
