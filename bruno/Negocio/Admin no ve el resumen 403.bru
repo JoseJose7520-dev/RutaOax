@@ -1,0 +1,19 @@
+meta {
+  name: Admin no ve el resumen 403
+  type: http
+  seq: 4
+}
+
+get {
+  url: {{baseUrl}}/negocio/resumen
+  body: none
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{tokenAdmin}}
+}
+
+assert {
+  res.status: eq 403
+}

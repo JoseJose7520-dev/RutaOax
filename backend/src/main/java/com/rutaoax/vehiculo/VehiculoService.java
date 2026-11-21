@@ -6,6 +6,7 @@ import com.rutaoax.common.NotFoundException;
 import com.rutaoax.common.PageResponse;
 import com.rutaoax.negocio.Negocio;
 import com.rutaoax.negocio.NegocioContexto;
+import com.rutaoax.pedido.PedidoRepository;
 import com.rutaoax.recorrido.EstadoRecorrido;
 import com.rutaoax.recorrido.Recorrido;
 import com.rutaoax.recorrido.RecorridoRepository;
@@ -13,11 +14,10 @@ import com.rutaoax.vehiculo.dto.VehiculoDTO;
 import com.rutaoax.vehiculo.dto.VehiculoDisponibleDTO;
 import com.rutaoax.vehiculo.dto.VehiculoRequest;
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -30,11 +30,14 @@ public class VehiculoService {
 
     private final VehiculoRepository vehiculos;
     private final RecorridoRepository recorridos;
+    private final PedidoRepository pedidos;
     private final NegocioContexto contexto;
 
-    public VehiculoService(VehiculoRepository vehiculos, RecorridoRepository recorridos, NegocioContexto contexto) {
+    public VehiculoService(VehiculoRepository vehiculos, RecorridoRepository recorridos, PedidoRepository pedidos,
+                           NegocioContexto contexto) {
         this.vehiculos = vehiculos;
         this.recorridos = recorridos;
+        this.pedidos = pedidos;
         this.contexto = contexto;
     }
 
@@ -87,15 +90,43 @@ public class VehiculoService {
         vehiculos.delete(v);
     }
 
+    /**
+     * Vehículos activos que se pueden usar ese día: sin recorrido, o en un recorrido PLANEADO (todavía no sale).
+     * Si ya están en una ruta, se informa qué repartidor la lleva y el cupo que queda.
+     */
     @Transactional(readOnly = true)
     public List<VehiculoDisponibleDTO> disponibles(UsuarioPrincipal yo, LocalDate fecha) {
         Negocio negocio = contexto.negocioDe(yo);
         LocalDate dia = fecha == null ? LocalDate.now() : fecha;
-        Set<Long> ocupados = new HashSet<>(recorridos.vehiculoIdsConRecorrido(dia));
-        return vehiculos.findByNegocioIdAndEstadoOrderByPlaca(negocio.getId(), EstadoVehiculo.ACTIVO).stream()
-                .filter(v -> !ocupados.contains(v.getId()))
-                .map(v -> new VehiculoDisponibleDTO(v.getId(), v.getTipo(), v.getPlaca(), v.getCapacidad(), v.getCapacidad()))
-                .toList();
+        List<Vehiculo> activos = vehiculos.findByNegocioIdAndEstadoOrderByPlaca(negocio.getId(), EstadoVehiculo.ACTIVO);
+        if (activos.isEmpty()) {
+            return List.of();
+        }
+        Map<Long, Recorrido> porVehiculo = new HashMap<>();
+        for (Recorrido r : recorridos.porVehiculosYFecha(dia, activos.stream().map(Vehiculo::getId).toList())) {
+            porVehiculo.put(r.getVehiculo().getId(), r);
+        }
+        Map<Long, Long> paradas = new HashMap<>();
+        List<Long> planeados = porVehiculo.values().stream()
+                .filter(r -> r.getEstado() == EstadoRecorrido.PLANEADO).map(Recorrido::getId).toList();
+        if (!planeados.isEmpty()) {
+            for (Object[] fila : pedidos.conteoPorRecorrido(planeados)) {
+                paradas.put((Long) fila[0], ((Number) fila[1]).longValue());
+            }
+        }
+        List<VehiculoDisponibleDTO> resultado = new ArrayList<>();
+        for (Vehiculo v : activos) {
+            Recorrido r = porVehiculo.get(v.getId());
+            if (r == null) {
+                resultado.add(new VehiculoDisponibleDTO(v.getId(), v.getTipo(), v.getPlaca(), v.getCapacidad(),
+                        v.getCapacidad(), null));
+            } else if (r.getEstado() == EstadoRecorrido.PLANEADO) {
+                int cupo = (int) Math.max(0, v.getCapacidad() - paradas.getOrDefault(r.getId(), 0L));
+                resultado.add(new VehiculoDisponibleDTO(v.getId(), v.getTipo(), v.getPlaca(), v.getCapacidad(), cupo,
+                        r.getRepartidor().getId()));
+            }
+        }
+        return resultado;
     }
 
     private Vehiculo buscarPropio(UsuarioPrincipal yo, Long id) {

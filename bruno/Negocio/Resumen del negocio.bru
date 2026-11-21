@@ -1,0 +1,23 @@
+meta {
+  name: Resumen del negocio
+  type: http
+  seq: 1
+}
+
+get {
+  url: {{baseUrl}}/negocio/resumen
+  body: none
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{tokenNegocio}}
+}
+
+assert {
+  res.status: eq 200
+  res.body.sinAsignar: gte 0
+  res.body.mensajesNuevos: gte 0
+  res.body.repartidoresHoy: isDefined
+  res.body.atencion: isDefined
+}

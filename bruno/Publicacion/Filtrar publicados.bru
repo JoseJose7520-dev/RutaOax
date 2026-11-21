@@ -1,0 +1,20 @@
+meta {
+  name: Filtrar publicados
+  type: http
+  seq: 6
+}
+
+get {
+  url: {{baseUrl}}/pedidos?modalidad=ABIERTO
+  body: none
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{tokenNegocio}}
+}
+
+assert {
+  res.status: eq 200
+  res.body.totalElements: gte 3
+}

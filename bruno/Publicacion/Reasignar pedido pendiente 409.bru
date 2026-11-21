@@ -1,0 +1,19 @@
+meta {
+  name: Reasignar pedido pendiente 409
+  type: http
+  seq: 7
+}
+
+post {
+  url: {{baseUrl}}/pedidos/{{pedidoPubId}}/reasignar
+  body: none
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{tokenNegocio}}
+}
+
+assert {
+  res.status: eq 409
+}
