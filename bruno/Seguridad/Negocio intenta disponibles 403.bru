@@ -1,0 +1,19 @@
+meta {
+  name: Negocio intenta disponibles 403
+  type: http
+  seq: 6
+}
+
+get {
+  url: {{baseUrl}}/disponibles
+  body: none
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{tokenNegocio}}
+}
+
+assert {
+  res.status: eq 403
+}

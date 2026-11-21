@@ -1,0 +1,19 @@
+meta {
+  name: Admin intenta mensajes 403
+  type: http
+  seq: 9
+}
+
+get {
+  url: {{baseUrl}}/mensajes/hilos
+  body: none
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{tokenAdmin}}
+}
+
+assert {
+  res.status: eq 403
+}

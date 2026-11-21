@@ -16,6 +16,9 @@ app.frontend-url=http://localhost:5173
 
 spring.mail.host=localhost
 spring.mail.port=25
+spring.mail.properties.mail.smtp.connectiontimeout=5000
+spring.mail.properties.mail.smtp.timeout=5000
+spring.mail.properties.mail.smtp.writetimeout=5000
 app.mail.from=no-reply@devs8.tech
 app.dev.log-reset-link=false
 

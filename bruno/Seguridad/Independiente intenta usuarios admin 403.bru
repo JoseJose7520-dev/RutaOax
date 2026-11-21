@@ -1,0 +1,19 @@
+meta {
+  name: Independiente intenta usuarios admin 403
+  type: http
+  seq: 8
+}
+
+get {
+  url: {{baseUrl}}/admin/usuarios
+  body: none
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{tokenIndependiente}}
+}
+
+assert {
+  res.status: eq 403
+}

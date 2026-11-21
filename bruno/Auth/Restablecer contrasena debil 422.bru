@@ -1,0 +1,23 @@
+meta {
+  name: Restablecer contrasena debil 422
+  type: http
+  seq: 17
+}
+
+post {
+  url: {{baseUrl}}/auth/reset-password
+  body: json
+  auth: none
+}
+
+body:json {
+  {
+    "token": "cualquiera",
+    "password": "123"
+  }
+}
+
+assert {
+  res.status: eq 422
+  res.body.errores.password: isDefined
+}

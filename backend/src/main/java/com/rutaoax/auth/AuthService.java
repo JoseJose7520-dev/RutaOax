@@ -11,6 +11,7 @@ import com.rutaoax.negocio.Negocio;
 import com.rutaoax.negocio.NegocioRepository;
 import com.rutaoax.negocio.Repartidor;
 import com.rutaoax.negocio.RepartidorRepository;
+import com.rutaoax.notificacion.EmailService;
 import com.rutaoax.usuario.Rol;
 import com.rutaoax.usuario.RolNombre;
 import com.rutaoax.usuario.RolRepository;
@@ -30,20 +31,25 @@ public class AuthService {
     private final RolRepository roles;
     private final NegocioRepository negocios;
     private final RepartidorRepository repartidores;
+    private final TokenRevocadoRepository revocados;
     private final PasswordEncoder encoder;
     private final JwtService jwt;
     private final UsuarioService usuarioService;
+    private final EmailService emailService;
 
     public AuthService(UsuarioRepository usuarios, RolRepository roles, NegocioRepository negocios,
-                       RepartidorRepository repartidores, PasswordEncoder encoder, JwtService jwt,
-                       UsuarioService usuarioService) {
+                       RepartidorRepository repartidores, TokenRevocadoRepository revocados,
+                       PasswordEncoder encoder, JwtService jwt, UsuarioService usuarioService,
+                       EmailService emailService) {
         this.usuarios = usuarios;
         this.roles = roles;
         this.negocios = negocios;
         this.repartidores = repartidores;
+        this.revocados = revocados;
         this.encoder = encoder;
         this.jwt = jwt;
         this.usuarioService = usuarioService;
+        this.emailService = emailService;
     }
 
     @Transactional(readOnly = true)
@@ -97,6 +103,8 @@ public class AuthService {
             r.setNegocio(null);
             repartidores.save(r);
         }
+
+        emailService.enviar(u.getEmail(), "Bienvenido a RutaOax", cuerpoBienvenida(u.getNombre()), "REGISTRO", u.getId());
         return usuarioService.aDTO(u);
     }
 
@@ -106,7 +114,24 @@ public class AuthService {
         return usuarioService.aDTO(u);
     }
 
+    @Transactional
+    public void logout(String token) {
+        String jti = jwt.getJti(token);
+        if (!revocados.existsByJti(jti)) {
+            TokenRevocado revocado = new TokenRevocado();
+            revocado.setJti(jti);
+            revocado.setExpiraEn(jwt.getExpiration(token));
+            revocados.save(revocado);
+        }
+    }
+
     private String normalizar(String email) {
         return email == null ? null : email.trim().toLowerCase();
+    }
+
+    private String cuerpoBienvenida(String nombre) {
+        return "<div style=\"font-family:Arial,sans-serif;color:#15171e\">"
+                + "<h2>¡Bienvenido a RutaOax, " + nombre + "!</h2>"
+                + "<p>Tu cuenta se creó correctamente. Ya puedes iniciar sesión y empezar a usar el sistema.</p></div>";
     }
 }
