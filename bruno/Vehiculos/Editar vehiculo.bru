@@ -1,0 +1,30 @@
+meta {
+  name: Editar vehiculo
+  type: http
+  seq: 7
+}
+
+put {
+  url: {{baseUrl}}/vehiculos/{{vehiculoId}}
+  body: json
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{tokenNegocio}}
+}
+
+body:json {
+  {
+    "tipo": "CAMIONETA",
+    "placa": "{{placaNueva}}",
+    "capacidad": 20,
+    "estado": "MANTENIMIENTO",
+    "seguroVence": null
+  }
+}
+
+assert {
+  res.status: eq 200
+  res.body.capacidad: eq 20
+}

@@ -1,0 +1,20 @@
+meta {
+  name: Admin ve todos los vehiculos
+  type: http
+  seq: 9
+}
+
+get {
+  url: {{baseUrl}}/vehiculos?size=50
+  body: none
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{tokenAdmin}}
+}
+
+assert {
+  res.status: eq 200
+  res.body.totalElements: gte 10
+}

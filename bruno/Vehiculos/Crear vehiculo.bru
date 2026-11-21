@@ -1,0 +1,38 @@
+meta {
+  name: Crear vehiculo
+  type: http
+  seq: 4
+}
+
+post {
+  url: {{baseUrl}}/vehiculos
+  body: json
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{tokenNegocio}}
+}
+
+body:json {
+  {
+    "tipo": "BICICLETA",
+    "placa": "{{placaNueva}}",
+    "capacidad": 5,
+    "estado": "ACTIVO",
+    "seguroVence": "2027-06-30"
+  }
+}
+
+vars:post-response {
+  vehiculoId: res.body.id
+}
+
+script:pre-request {
+  bru.setVar("placaNueva", "T" + Date.now().toString().slice(-8));
+}
+
+assert {
+  res.status: eq 201
+  res.body.enUsoHoy: eq false
+}

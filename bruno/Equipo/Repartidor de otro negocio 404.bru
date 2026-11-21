@@ -1,0 +1,26 @@
+meta {
+  name: Repartidor de otro negocio 404
+  type: http
+  seq: 8
+}
+
+put {
+  url: {{baseUrl}}/equipo/{{miembroId}}
+  body: json
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{tokenNegocio2}}
+}
+
+body:json {
+  {
+    "nombre": "Intruso",
+    "telefono": null
+  }
+}
+
+assert {
+  res.status: eq 404
+}

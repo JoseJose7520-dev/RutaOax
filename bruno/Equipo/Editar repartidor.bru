@@ -1,0 +1,27 @@
+meta {
+  name: Editar repartidor
+  type: http
+  seq: 6
+}
+
+put {
+  url: {{baseUrl}}/equipo/{{miembroId}}
+  body: json
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{tokenNegocio}}
+}
+
+body:json {
+  {
+    "nombre": "Repartidor Prueba Editado",
+    "telefono": null
+  }
+}
+
+assert {
+  res.status: eq 200
+  res.body.usuario.nombre: eq Repartidor Prueba Editado
+}

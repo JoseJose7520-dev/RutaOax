@@ -1,0 +1,19 @@
+meta {
+  name: Quitar repartidor
+  type: http
+  seq: 10
+}
+
+delete {
+  url: {{baseUrl}}/equipo/{{miembroId}}
+  body: none
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{tokenNegocio}}
+}
+
+assert {
+  res.status: eq 204
+}

@@ -1,0 +1,30 @@
+meta {
+  name: Crear datos invalidos 422
+  type: http
+  seq: 6
+}
+
+post {
+  url: {{baseUrl}}/vehiculos
+  body: json
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{tokenNegocio}}
+}
+
+body:json {
+  {
+    "tipo": "BICICLETA",
+    "placa": "",
+    "capacidad": 0,
+    "estado": "ACTIVO"
+  }
+}
+
+assert {
+  res.status: eq 422
+  res.body.errores.capacidad: isDefined
+  res.body.errores.placa: isDefined
+}

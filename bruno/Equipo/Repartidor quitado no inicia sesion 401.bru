@@ -1,0 +1,22 @@
+meta {
+  name: Repartidor quitado no inicia sesion 401
+  type: http
+  seq: 11
+}
+
+post {
+  url: {{baseUrl}}/auth/login
+  body: json
+  auth: none
+}
+
+body:json {
+  {
+    "email": "{{emailMiembro}}",
+    "password": "Equipo#2026"
+  }
+}
+
+assert {
+  res.status: eq 401
+}

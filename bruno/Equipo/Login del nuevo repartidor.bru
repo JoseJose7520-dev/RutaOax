@@ -1,0 +1,23 @@
+meta {
+  name: Login del nuevo repartidor
+  type: http
+  seq: 9
+}
+
+post {
+  url: {{baseUrl}}/auth/login
+  body: json
+  auth: none
+}
+
+body:json {
+  {
+    "email": "{{emailMiembro}}",
+    "password": "Equipo#2026"
+  }
+}
+
+assert {
+  res.status: eq 200
+  res.body.usuario.perfil.tipoRepartidor: eq EMPRESA
+}

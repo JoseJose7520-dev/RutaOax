@@ -1,0 +1,28 @@
+meta {
+  name: Crear placa repetida 409
+  type: http
+  seq: 5
+}
+
+post {
+  url: {{baseUrl}}/vehiculos
+  body: json
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{tokenNegocio}}
+}
+
+body:json {
+  {
+    "tipo": "BICICLETA",
+    "placa": "oax-214",
+    "capacidad": 5,
+    "estado": "ACTIVO"
+  }
+}
+
+assert {
+  res.status: eq 409
+}

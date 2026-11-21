@@ -1,0 +1,26 @@
+meta {
+  name: Login negocio 2
+  type: http
+  seq: 18
+}
+
+post {
+  url: {{baseUrl}}/auth/login
+  body: json
+  auth: none
+}
+
+body:json {
+  {
+    "email": "negocio2@rutaoax.com",
+    "password": "Ruta#2026"
+  }
+}
+
+vars:post-response {
+  tokenNegocio2: res.body.token
+}
+
+assert {
+  res.status: eq 200
+}

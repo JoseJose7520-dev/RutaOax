@@ -1,0 +1,19 @@
+meta {
+  name: Repartidores disponibles
+  type: http
+  seq: 7
+}
+
+get {
+  url: {{baseUrl}}/equipo/disponibles?fecha=2030-01-01
+  body: none
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{tokenNegocio}}
+}
+
+assert {
+  res.status: eq 200
+}

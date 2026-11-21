@@ -1,0 +1,19 @@
+meta {
+  name: Vehiculo de otro negocio 404
+  type: http
+  seq: 8
+}
+
+get {
+  url: {{baseUrl}}/vehiculos/{{vehiculoId}}
+  body: none
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{tokenNegocio2}}
+}
+
+assert {
+  res.status: eq 404
+}

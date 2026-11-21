@@ -1,0 +1,28 @@
+meta {
+  name: Admin no puede crear 403
+  type: http
+  seq: 11
+}
+
+post {
+  url: {{baseUrl}}/vehiculos
+  body: json
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{tokenAdmin}}
+}
+
+body:json {
+  {
+    "tipo": "BICICLETA",
+    "placa": "ADM-001",
+    "capacidad": 5,
+    "estado": "ACTIVO"
+  }
+}
+
+assert {
+  res.status: eq 403
+}

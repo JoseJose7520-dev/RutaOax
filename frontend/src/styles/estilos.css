@@ -147,3 +147,13 @@ input:focus,select:focus,textarea:focus,.btn:focus-visible{outline:2px solid var
 .enlace{color:var(--azul);font-weight:600}
 .centro{text-align:center}
 .pagina-pendiente{display:flex;flex-direction:column;gap:8px;align-items:flex-start}
+
+/* ===== Listados, tablas y formularios (Día 2) ===== */
+.aviso.alerta{background:var(--aviso-bg);color:var(--aviso)}
+.paginacion{display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap;padding:8px 0}
+.paginacion small{display:inline}
+.tabla-scroll{overflow-x:auto}
+.acciones{display:flex;gap:8px;justify-content:flex-end;flex-wrap:wrap}
+.form-vertical{display:flex;flex-direction:column;gap:14px}
+.form-2col{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+@media(max-width:600px){.form-2col{grid-template-columns:1fr}}
