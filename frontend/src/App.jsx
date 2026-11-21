@@ -4,6 +4,7 @@ import RedirectInicio from './auth/RedirectInicio';
 import RoleRoute from './auth/RoleRoute';
 import AppLayout from './components/layout/AppLayout';
 import PaginaPendiente from './pages/PaginaPendiente';
+import PerfilPage from './pages/perfil/PerfilPage';
 import LoginPage from './pages/auth/LoginPage';
 import RecuperarPage from './pages/auth/RecuperarPage';
 import RegistroPage from './pages/auth/RegistroPage';
@@ -20,7 +21,7 @@ export default function App() {
 
       <Route element={<ProtectedRoute />}>
         <Route element={<AppLayout />}>
-          <Route path="/perfil" element={<PaginaPendiente titulo="Mi perfil" />} />
+          <Route path="/perfil" element={<PerfilPage />} />
           <Route element={<RoleRoute roles={['NEGOCIO']} />}>
             <Route path="/negocio" element={<PaginaPendiente titulo="Panel del negocio" />} />
             <Route path="/negocio/pedidos" element={<PaginaPendiente titulo="Pedidos y asignación" />} />
