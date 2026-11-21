@@ -1,0 +1,23 @@
+meta {
+  name: Seguimiento en camino
+  type: http
+  seq: 12
+}
+
+get {
+  url: {{baseUrl}}/pedidos/{{flujoPedidoId}}/seguimiento
+  body: none
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{tokenCliente}}
+}
+
+assert {
+  res.status: eq 200
+  res.body.estado: eq EN_CAMINO
+  res.body.repartidor.tipo: eq EMPRESA
+  res.body.pasos[2].hecho: eq true
+  res.body.pasos[3].hecho: eq false
+}

@@ -3,8 +3,11 @@ package com.rutaoax.pedido;
 import com.rutaoax.auth.UsuarioPrincipal;
 import com.rutaoax.common.PageResponse;
 import com.rutaoax.pedido.dto.AsignarRequest;
+import com.rutaoax.pedido.dto.EstadoRequest;
 import com.rutaoax.pedido.dto.PedidoDTO;
 import com.rutaoax.pedido.dto.PedidoRequest;
+import com.rutaoax.pedido.dto.SeguimientoDTO;
+import com.rutaoax.recorrido.EntregaService;
 import com.rutaoax.recorrido.dto.RecorridoDTO;
 import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
@@ -13,6 +16,7 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
@@ -27,10 +31,15 @@ public class PedidoController {
 
     private final PedidoService servicio;
     private final AsignacionService asignacion;
+    private final EntregaService entregas;
+    private final SeguimientoService seguimiento;
 
-    public PedidoController(PedidoService servicio, AsignacionService asignacion) {
+    public PedidoController(PedidoService servicio, AsignacionService asignacion, EntregaService entregas,
+                            SeguimientoService seguimiento) {
         this.servicio = servicio;
         this.asignacion = asignacion;
+        this.entregas = entregas;
+        this.seguimiento = seguimiento;
     }
 
     @GetMapping
@@ -93,5 +102,17 @@ public class PedidoController {
     @PreAuthorize("hasRole('NEGOCIO')")
     public PedidoDTO desasignar(@AuthenticationPrincipal UsuarioPrincipal yo, @PathVariable Long id) {
         return asignacion.desasignar(yo, id);
+    }
+
+    @PatchMapping("/{id}/estado")
+    @PreAuthorize("hasRole('REPARTIDOR')")
+    public PedidoDTO cambiarEstado(@AuthenticationPrincipal UsuarioPrincipal yo, @PathVariable Long id,
+                                   @Valid @RequestBody EstadoRequest req) {
+        return entregas.marcar(yo, id, EstadoPedido.valueOf(req.estado()), req.motivo());
+    }
+
+    @GetMapping("/{id}/seguimiento")
+    public SeguimientoDTO seguimiento(@AuthenticationPrincipal UsuarioPrincipal yo, @PathVariable Long id) {
+        return seguimiento.seguimiento(yo, id);
     }
 }

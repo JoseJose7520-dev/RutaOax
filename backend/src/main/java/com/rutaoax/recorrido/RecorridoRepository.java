@@ -4,6 +4,8 @@ import java.time.LocalDate;
 import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
@@ -39,4 +41,18 @@ public interface RecorridoRepository extends JpaRepository<Recorrido, Long> {
 
     @Query("select r from Recorrido r join fetch r.repartidor rep join fetch rep.usuario left join fetch r.vehiculo where r.id = :id")
     Optional<Recorrido> detalle(@Param("id") Long id);
+
+    /** Listado paginado: por negocio (repartidores de su equipo), por repartidor (usuario) o todos (null). */
+    @Query(value = "select r from Recorrido r join r.repartidor rep join rep.usuario u"
+            + " where (:negocioId is null or rep.negocio.id = :negocioId)"
+            + " and (:usuarioId is null or u.id = :usuarioId)"
+            + " and (:fecha is null or r.fecha = :fecha)"
+            + " and (:estado is null or r.estado = :estado)",
+            countQuery = "select count(r) from Recorrido r join r.repartidor rep join rep.usuario u"
+            + " where (:negocioId is null or rep.negocio.id = :negocioId)"
+            + " and (:usuarioId is null or u.id = :usuarioId)"
+            + " and (:fecha is null or r.fecha = :fecha)"
+            + " and (:estado is null or r.estado = :estado)")
+    Page<Recorrido> buscar(@Param("negocioId") Long negocioId, @Param("usuarioId") Long usuarioId,
+                           @Param("fecha") LocalDate fecha, @Param("estado") EstadoRecorrido estado, Pageable pageable);
 }

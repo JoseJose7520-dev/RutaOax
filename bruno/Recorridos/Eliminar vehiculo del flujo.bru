@@ -1,0 +1,19 @@
+meta {
+  name: Eliminar vehiculo del flujo
+  type: http
+  seq: 26
+}
+
+delete {
+  url: {{baseUrl}}/vehiculos/{{flujoVehId}}
+  body: none
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{tokenNegocio}}
+}
+
+assert {
+  res.status: eq 204
+}

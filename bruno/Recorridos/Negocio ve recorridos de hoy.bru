@@ -1,0 +1,20 @@
+meta {
+  name: Negocio ve recorridos de hoy
+  type: http
+  seq: 21
+}
+
+get {
+  url: {{baseUrl}}/recorridos?fecha={{hoy}}&page=0&size=10
+  body: none
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{tokenNegocio}}
+}
+
+assert {
+  res.status: eq 200
+  res.body.totalElements: gte 1
+}

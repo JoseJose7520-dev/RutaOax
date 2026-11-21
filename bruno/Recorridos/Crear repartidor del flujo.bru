@@ -1,0 +1,37 @@
+meta {
+  name: Crear repartidor del flujo
+  type: http
+  seq: 1
+}
+
+post {
+  url: {{baseUrl}}/equipo
+  body: json
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{tokenNegocio}}
+}
+
+body:json {
+  {
+    "nombre": "Repartidor Flujo",
+    "email": "{{flujoEmail}}",
+    "password": "Equipo#2026",
+    "telefono": "9515550170"
+  }
+}
+
+vars:post-response {
+  flujoRepId: res.body.id
+}
+
+script:pre-request {
+  bru.setVar("flujoEmail", "flujo" + Date.now() + "@rutaoax.com");
+  bru.setVar("hoy", new Date(Date.now() - 6 * 3600 * 1000).toISOString().slice(0, 10));
+}
+
+assert {
+  res.status: eq 201
+}

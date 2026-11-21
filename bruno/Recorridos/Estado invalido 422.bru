@@ -1,0 +1,26 @@
+meta {
+  name: Estado invalido 422
+  type: http
+  seq: 13
+}
+
+patch {
+  url: {{baseUrl}}/pedidos/{{flujoPedidoId}}/estado
+  body: json
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{tokenFlujo}}
+}
+
+body:json {
+  {
+    "estado": "PERDIDO"
+  }
+}
+
+assert {
+  res.status: eq 422
+  res.body.errores.estado: isDefined
+}

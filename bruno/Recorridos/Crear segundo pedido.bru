@@ -1,0 +1,34 @@
+meta {
+  name: Crear segundo pedido
+  type: http
+  seq: 5
+}
+
+post {
+  url: {{baseUrl}}/pedidos
+  body: json
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{tokenNegocio}}
+}
+
+body:json {
+  {
+    "clienteNombre": "Andrés Vásquez",
+    "clienteTelefono": "9515554321",
+    "direccion": "Av. Juárez 210",
+    "zona": "Jalatlaco",
+    "articulos": 1,
+    "total": 180
+  }
+}
+
+vars:post-response {
+  flujoPedido2Id: res.body.id
+}
+
+assert {
+  res.status: eq 201
+}

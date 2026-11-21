@@ -1,0 +1,22 @@
+meta {
+  name: Seguimiento entregado
+  type: http
+  seq: 19
+}
+
+get {
+  url: {{baseUrl}}/pedidos/{{flujoPedidoId}}/seguimiento
+  body: none
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{tokenCliente}}
+}
+
+assert {
+  res.status: eq 200
+  res.body.estado: eq ENTREGADO
+  res.body.pasos[3].clave: eq ENTREGADO
+  res.body.pasos[3].hecho: eq true
+}

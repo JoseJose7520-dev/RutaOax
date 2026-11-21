@@ -1,0 +1,35 @@
+meta {
+  name: Crear pedido del cliente
+  type: http
+  seq: 4
+}
+
+post {
+  url: {{baseUrl}}/pedidos
+  body: json
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{tokenNegocio}}
+}
+
+body:json {
+  {
+    "clienteNombre": "Carla Ríos",
+    "clienteTelefono": "9515550109",
+    "clienteEmail": "cliente1@rutaoax.com",
+    "direccion": "Calle García Vigil 512",
+    "zona": "Centro Histórico",
+    "articulos": 2,
+    "total": 350
+  }
+}
+
+vars:post-response {
+  flujoPedidoId: res.body.id
+}
+
+assert {
+  res.status: eq 201
+}

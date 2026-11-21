@@ -1,0 +1,22 @@
+meta {
+  name: Mi ruta de hoy
+  type: http
+  seq: 7
+}
+
+get {
+  url: {{baseUrl}}/recorridos/hoy
+  body: none
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{tokenFlujo}}
+}
+
+assert {
+  res.status: eq 200
+  res.body.estado: eq PLANEADO
+  res.body.total: eq 2
+  res.body.paradas[0].ordenParada: eq 1
+}

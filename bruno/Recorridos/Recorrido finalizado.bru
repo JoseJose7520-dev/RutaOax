@@ -1,0 +1,21 @@
+meta {
+  name: Recorrido finalizado
+  type: http
+  seq: 18
+}
+
+get {
+  url: {{baseUrl}}/recorridos/{{flujoRecId}}
+  body: none
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{tokenFlujo}}
+}
+
+assert {
+  res.status: eq 200
+  res.body.estado: eq FINALIZADO
+  res.body.entregados: eq 1
+}
