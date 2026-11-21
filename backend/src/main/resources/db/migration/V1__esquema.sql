@@ -88,7 +88,7 @@ CREATE TABLE pedidos (
   orden_parada INT NULL,
   creado_en DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
   actualizado_en DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-  CONSTRAINT fk_ped_negocio FOREIGN KEY (negocio_id) REFERENCES negocios(id) ON DELETE SET NULL,
+  CONSTRAINT fk_ped_negocio FOREIGN KEY (negocio_id) REFERENCES negocios(id),
   CONSTRAINT fk_ped_cliente FOREIGN KEY (cliente_id) REFERENCES usuarios(id) ON DELETE SET NULL,
   CONSTRAINT fk_ped_recorrido FOREIGN KEY (recorrido_id) REFERENCES recorridos(id) ON DELETE SET NULL,
   CONSTRAINT ck_ped_modalidad CHECK (modalidad IN ('NEGOCIO','ABIERTO')),

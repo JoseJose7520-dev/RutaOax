@@ -59,7 +59,7 @@ public class GlobalExceptionHandler {
     public ResponseEntity<ApiError> validacion(MethodArgumentNotValidException ex, HttpServletRequest req) {
         Map<String, String> errores = new LinkedHashMap<>();
         ex.getBindingResult().getFieldErrors()
-                .forEach(fe -> errores.putIfAbsent(fe.getField(), fe.getDefaultMessage()));
+                .forEach(fe -> errores.putIfAbsent(campo(fe.getField()), fe.getDefaultMessage()));
         ex.getBindingResult().getGlobalErrors()
                 .forEach(ge -> errores.putIfAbsent(ge.getObjectName(), ge.getDefaultMessage()));
         return respuesta(HttpStatus.UNPROCESSABLE_ENTITY, "Hay campos inválidos", req, errores);
@@ -71,7 +71,7 @@ public class GlobalExceptionHandler {
         for (ConstraintViolation<?> v : ex.getConstraintViolations()) {
             String ruta = v.getPropertyPath().toString();
             String campo = ruta.contains(".") ? ruta.substring(ruta.lastIndexOf('.') + 1) : ruta;
-            errores.putIfAbsent(campo, v.getMessage());
+            errores.putIfAbsent(campo(campo), v.getMessage());
         }
         return respuesta(HttpStatus.UNPROCESSABLE_ENTITY, "Hay campos inválidos", req, errores);
     }
@@ -91,6 +91,11 @@ public class GlobalExceptionHandler {
     public ResponseEntity<ApiError> inesperado(Exception ex, HttpServletRequest req) {
         log.error("Error inesperado en {}", req.getRequestURI(), ex);
         return respuesta(HttpStatus.INTERNAL_SERVER_ERROR, "Ocurrió un error inesperado. Intenta de nuevo", req, null);
+    }
+
+    // Los métodos @AssertTrue llamados isXxxValido reportan su error en el campo "xxx".
+    private static String campo(String nombre) {
+        return nombre.endsWith("Valido") ? nombre.substring(0, nombre.length() - "Valido".length()) : nombre;
     }
 
     private ResponseEntity<ApiError> respuesta(HttpStatus estado, String mensaje, HttpServletRequest req,
