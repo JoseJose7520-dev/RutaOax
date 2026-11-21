@@ -3,8 +3,8 @@
 Última actualización: ________ · Día: 1 · Día 2 · Parte 3 entregada (HU-14 y HU-15) · Quién: ________
 
 ## Resumen
-Fase actual: **DÍA 2 · Parte 3 entregada** (HU-14 panel del negocio, HU-15 publicar y reasignar, y la mejora del panel de asignación; **por verificar** con `docs/dia-2/EJECUTAR-DIA-2-PARTE-3.md`). Con esto termina el Día 2.
-- Verificado por el equipo en local: Día 1 y Día 2 Partes 1 y 2. **HU-09 desplegado el 21/11 en https://rutaoax.devs8.tech.**
+Fase actual: **Día 2 terminado.** El 21/11 corrimos Bruno contra producción (pasaron las 98 peticiones) e hicimos la prueba del cupo a mano. También agregamos más datos de prueba (HU-39). Antes de eso: **Día 2 · Parte 3 entregada** (HU-14 panel del negocio, HU-15 publicar y reasignar, y la mejora del panel de asignación; **por verificar** con `docs/dia-2/EJECUTAR-DIA-2-PARTE-3.md`). Con esto termina el Día 2.
+- Verificado por el equipo en local: Día 1 y Día 2 Partes 1 y 2. El despliegue (HU-09) quedó listo el 21/11 en https://rutaoax.devs8.tech.
 - Parte 3 entrega: `GET /api/negocio/resumen` y la pantalla `/negocio` (indicadores, repartidores de hoy y "Requiere atención"); `POST /pedidos/{id}/publicar` y `/reasignar` con sus botones; y el panel de asignación ahora **puede sumar pedidos a una ruta ya planeada** (resuelve la limitación anotada; era necesario para "ver el cupo bajar").
 - Siguiente: Día 3 (repartidores, cliente, mensajes y comunicaciones reales). Antes, cerrar el Día 2 con `docs/dia-2/03-CIERRE-DIA-2.md` y, de preferencia, ejecutar HU-09.
 - Interfaces congeladas en `docs/dia-1/01-INTERFACES-COMPARTIDAS.md` (con anexos hasta el Día 2 Parte 3).
@@ -16,58 +16,58 @@ Fase actual: **DÍA 2 · Parte 3 entregada** (HU-14 panel del negocio, HU-15 pub
 - MySQL local: base `rutaoax`, usuario `rutaoax_app`.
 
 ## Plan del Día 1 (tareas de `docs/dia-1/02-TAREAS-DIA-1.md`)
-Estados: ⬜ pendiente · 🟨 en curso o por verificar · ✅ hecha y verificada · ❌ bloqueada
+Estados: Pendiente · En curso (o por verificar) · Hecha · Bloqueada
 | Tarea | HU | Responsable | Estado | Notas |
 |---|---|---|---|---|
-| A1 Backend + Flyway + entidades | HU-01a | A | ✅ | Verificado por el equipo |
-| A2 Seeder usuarios | HU-01b | A | ✅ | Verificado por el equipo |
-| A3 Seeder operación | HU-01c | A | ✅ | Verificado por el equipo |
-| A4 Errores y paginación | HU-02 | A | ✅ | Verificado por el equipo |
-| A5 Login y JWT | HU-04 | A | ✅ | Verificado (arranca y funciona tras corregir CORS) |
-| A6 Registro | HU-03 | A | ✅ | Verificado |
-| A7 Logout con revocación | HU-05 | A | ✅ | Verificado por el equipo |
-| A8 Recuperar contraseña y correo | HU-06 | A | ✅ | Verificado; el envío real queda FALLIDO hasta tener Postfix (HU-26) |
-| A9 Seguridad por rol | HU-08 | A | ✅ | Verificado por el equipo |
-| A10 Perfil backend | HU-07 | A | ✅ | Verificado en local |
-| B1 Esqueleto frontend | HU-07a | B | ✅ | Verificado |
-| B2 Login y sesión | HU-04 | B | ✅ | Verificado |
-| B3 Registro | HU-03 | B | ✅ | Verificado |
-| B4 Recuperar y restablecer | HU-06 | B | ✅ | Verificado por el equipo |
-| B5 Rutas protegidas, navbar y perfil | HU-07/05 | B | ✅ | Verificado en local |
-| D Despliegue con HTTPS | HU-09 | A+B | ✅ | Desplegado el 21/11 en https://rutaoax.devs8.tech (API en el puerto 9260 del VPS; el 9250 ya lo usa otra app) |
+| A1 Backend + Flyway + entidades | HU-01a | A | Hecha | Verificado por el equipo |
+| A2 Seeder usuarios | HU-01b | A | Hecha | Verificado por el equipo |
+| A3 Seeder operación | HU-01c | A | Hecha | Verificado por el equipo |
+| A4 Errores y paginación | HU-02 | A | Hecha | Verificado por el equipo |
+| A5 Login y JWT | HU-04 | A | Hecha | Verificado (arranca y funciona tras corregir CORS) |
+| A6 Registro | HU-03 | A | Hecha | Verificado |
+| A7 Logout con revocación | HU-05 | A | Hecha | Verificado por el equipo |
+| A8 Recuperar contraseña y correo | HU-06 | A | Hecha | Verificado; el envío real queda FALLIDO hasta tener Postfix (HU-26) |
+| A9 Seguridad por rol | HU-08 | A | Hecha | Verificado por el equipo |
+| A10 Perfil backend | HU-07 | A | Hecha | Verificado en local |
+| B1 Esqueleto frontend | HU-07a | B | Hecha | Verificado |
+| B2 Login y sesión | HU-04 | B | Hecha | Verificado |
+| B3 Registro | HU-03 | B | Hecha | Verificado |
+| B4 Recuperar y restablecer | HU-06 | B | Hecha | Verificado por el equipo |
+| B5 Rutas protegidas, navbar y perfil | HU-07/05 | B | Hecha | Verificado en local |
+| D Despliegue con HTTPS | HU-09 | A+B | Hecha | Quedó en https://rutaoax.devs8.tech el 21/11. En el VPS la API usa el puerto 9260 porque el 9250 ya estaba ocupado |
 
 ## Plan del Día 2 (Negocio)
 | Tarea | HU | Responsable | Estado | Notas |
 |---|---|---|---|---|
-| A11 Vehículos (backend) | HU-10 | A | ✅ | Verificado por el equipo |
-| B6 Vehículos (pantalla) | HU-10 | B | ✅ | Verificado por el equipo |
-| A12 Equipo (backend) | HU-11 | A | ✅ | Verificado por el equipo |
-| B7 Equipo (pantalla) | HU-11 | B | ✅ | Verificado por el equipo |
-| A13 Pedidos (backend) | HU-12 | A | ✅ | Verificado por el equipo |
-| B8 Pedidos (pantalla) | HU-12 | B | ✅ | Verificado por el equipo |
-| A14 Asignación | HU-13 | A+B | ✅ | Verificado por el equipo (el panel se mejoró en la Parte 3) |
-| A15 Panel y publicar/reasignar | HU-14, HU-15 | A+B | 🟨 | Entregado en la Parte 3; falta verificar |
+| A11 Vehículos (backend) | HU-10 | A | Hecha | Verificado por el equipo |
+| B6 Vehículos (pantalla) | HU-10 | B | Hecha | Verificado por el equipo |
+| A12 Equipo (backend) | HU-11 | A | Hecha | Verificado por el equipo |
+| B7 Equipo (pantalla) | HU-11 | B | Hecha | Verificado por el equipo |
+| A13 Pedidos (backend) | HU-12 | A | Hecha | Verificado por el equipo |
+| B8 Pedidos (pantalla) | HU-12 | B | Hecha | Verificado por el equipo |
+| A14 Asignación | HU-13 | A+B | Hecha | Verificado por el equipo (el panel se mejoró en la Parte 3) |
+| A15 Panel y publicar/reasignar | HU-14, HU-15 | A+B | Hecha | Probado el 21/11 en producción con Bruno y a mano |
 
 ## Estado por historia
 | HU | Nombre | Estado | Notas |
 |---|---|---|---|
-| 00 | Entorno y repositorio | ⬜ | |
-| 01 | Esqueleto backend y BD | ✅ | Verificado. V1 ajustado (ver Decisiones) |
-| 02 | Errores globales y paginación | ✅ | Verificado |
-| 03 | Registro | ✅ | Verificado |
-| 04 | Login JWT | ✅ | Verificado |
-| 05 | Logout con revocación | ✅ | Verificado |
-| 06 | Recuperar contraseña | ✅ | Verificado; correo real pendiente de Postfix (HU-26) |
-| 07 | Rutas protegidas, navbar y perfil | ✅ | Verificado en local |
-| 08 | Seguridad por rol | ✅ | Verificado con la carpeta Seguridad de Bruno |
-| 09 | Primer despliegue HTTPS | ✅ | Desplegado el 21/11; certificado propio para rutaoax.devs8.tech, swap de 2 GB y límite de memoria -Xmx384m |
-| 10 | Vehículos | ✅ | Verificado |
-| 11 | Equipo de reparto | ✅ | Verificado |
-| 12 | Pedidos del negocio | ✅ | Verificado |
-| 13 | Asignar pedidos | ✅ | Verificado; mejorado en la Parte 3 |
-| 14 | Panel del negocio | 🟨 | Backend y pantalla entregados; falta verificar |
-| 15 | Publicar y reasignar | 🟨 | Backend y botones entregados; falta verificar |
-| 16 a 34 | Días 3 y 4 | ⬜ | ver `03-HISTORIAS.md` |
+| 00 | Entorno y repositorio | Pendiente | |
+| 01 | Esqueleto backend y BD | Hecha | Verificado. V1 ajustado (ver Decisiones) |
+| 02 | Errores globales y paginación | Hecha | Verificado |
+| 03 | Registro | Hecha | Verificado |
+| 04 | Login JWT | Hecha | Verificado |
+| 05 | Logout con revocación | Hecha | Verificado |
+| 06 | Recuperar contraseña | Hecha | Verificado; correo real pendiente de Postfix (HU-26) |
+| 07 | Rutas protegidas, navbar y perfil | Hecha | Verificado en local |
+| 08 | Seguridad por rol | Hecha | Verificado con la carpeta Seguridad de Bruno |
+| 09 | Primer despliegue HTTPS | Hecha | Subido el 21/11 con su propio certificado. Al VPS le pusimos 2 GB de swap y a la API un límite de 384 MB |
+| 10 | Vehículos | Hecha | Verificado |
+| 11 | Equipo de reparto | Hecha | Verificado |
+| 12 | Pedidos del negocio | Hecha | Verificado |
+| 13 | Asignar pedidos | Hecha | Verificado; mejorado en la Parte 3 |
+| 14 | Panel del negocio | Hecha | Probado en producción |
+| 15 | Publicar y reasignar | Hecha | Probado en producción |
+| 16 a 34 | Días 3 y 4 | Pendiente | ver `03-HISTORIAS.md` |
 
 ## Archivos que ya existen
 **Backend** (`backend/`): `pom.xml`, `.gitignore`, `src/main/resources/db/migration/V1__esquema.sql`, `application.properties.example`.
