@@ -1,0 +1,19 @@
+meta {
+  name: Eliminar pedido B
+  type: http
+  seq: 24
+}
+
+delete {
+  url: {{baseUrl}}/pedidos/{{pedidoIdB}}
+  body: none
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{tokenNegocio}}
+}
+
+assert {
+  res.status: eq 204
+}

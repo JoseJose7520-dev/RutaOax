@@ -1,0 +1,33 @@
+meta {
+  name: Editar pedido
+  type: http
+  seq: 9
+}
+
+put {
+  url: {{baseUrl}}/pedidos/{{pedidoId}}
+  body: json
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{tokenNegocio}}
+}
+
+body:json {
+  {
+    "clienteNombre": "Cliente Prueba A Editado",
+    "clienteTelefono": "9515550160",
+    "clienteEmail": "cliente3@rutaoax.com",
+    "direccion": "Calle Prueba 100",
+    "zona": "Jalatlaco",
+    "articulos": 3,
+    "total": 200,
+    "notas": "Prueba Bruno"
+  }
+}
+
+assert {
+  res.status: eq 200
+  res.body.articulos: eq 3
+}

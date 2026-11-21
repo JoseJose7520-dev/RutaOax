@@ -157,3 +157,11 @@ input:focus,select:focus,textarea:focus,.btn:focus-visible{outline:2px solid var
 .form-vertical{display:flex;flex-direction:column;gap:14px}
 .form-2col{display:grid;grid-template-columns:1fr 1fr;gap:14px}
 @media(max-width:600px){.form-2col{grid-template-columns:1fr}}
+
+/* ===== Pedidos y asignación (Día 2) ===== */
+input[type=checkbox],input[type=radio]{width:auto}
+.col-check{width:44px}
+.panel-asignar{position:sticky;top:16px;align-self:start}
+.cupo{display:flex;justify-content:space-between;gap:8px}
+.cupo strong{color:var(--tinta)}
+.chips{display:flex;gap:8px;flex-wrap:wrap}

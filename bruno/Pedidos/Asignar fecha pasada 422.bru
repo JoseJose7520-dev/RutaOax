@@ -1,0 +1,31 @@
+meta {
+  name: Asignar fecha pasada 422
+  type: http
+  seq: 20
+}
+
+post {
+  url: {{baseUrl}}/pedidos/asignar
+  body: json
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{tokenNegocio}}
+}
+
+body:json {
+  {
+    "pedidoIds": [
+      "{{pedidoIdB}}"
+    ],
+    "repartidorId": "{{repartidorAsignId}}",
+    "vehiculoId": "{{vehiculoCupoId}}",
+    "fecha": "2020-01-01"
+  }
+}
+
+assert {
+  res.status: eq 422
+  res.body.errores.fecha: isDefined
+}

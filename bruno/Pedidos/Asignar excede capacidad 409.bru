@@ -1,0 +1,31 @@
+meta {
+  name: Asignar excede capacidad 409
+  type: http
+  seq: 16
+}
+
+post {
+  url: {{baseUrl}}/pedidos/asignar
+  body: json
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{tokenNegocio}}
+}
+
+body:json {
+  {
+    "pedidoIds": [
+      "{{pedidoId}}",
+      "{{pedidoIdB}}"
+    ],
+    "repartidorId": "{{repartidorAsignId}}",
+    "vehiculoId": "{{vehiculoCupoId}}",
+    "fecha": "2030-06-15"
+  }
+}
+
+assert {
+  res.status: eq 409
+}

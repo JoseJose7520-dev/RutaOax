@@ -33,3 +33,14 @@ export const ETIQUETA_TIPO_VEHICULO = {
   BICICLETA: 'Bicicleta',
   AUTOMOVIL: 'Automóvil',
 };
+
+export function hoyIso() {
+  const d = new Date();
+  const mes = String(d.getMonth() + 1).padStart(2, '0');
+  const dia = String(d.getDate()).padStart(2, '0');
+  return `${d.getFullYear()}-${mes}-${dia}`;
+}
+
+export function moneda(valor) {
+  return Number(valor ?? 0).toLocaleString('es-MX', { style: 'currency', currency: 'MXN' });
+}

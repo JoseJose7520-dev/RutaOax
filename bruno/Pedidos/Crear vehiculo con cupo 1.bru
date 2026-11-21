@@ -1,0 +1,36 @@
+meta {
+  name: Crear vehiculo con cupo 1
+  type: http
+  seq: 15
+}
+
+post {
+  url: {{baseUrl}}/vehiculos
+  body: json
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{tokenNegocio}}
+}
+
+body:json {
+  {
+    "tipo": "BICICLETA",
+    "placa": "{{placaCupo}}",
+    "capacidad": 1,
+    "estado": "ACTIVO"
+  }
+}
+
+vars:post-response {
+  vehiculoCupoId: res.body.id
+}
+
+script:pre-request {
+  bru.setVar("placaCupo", "C" + Date.now().toString().slice(-8));
+}
+
+assert {
+  res.status: eq 201
+}

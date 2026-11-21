@@ -1,0 +1,19 @@
+meta {
+  name: Pedido de otro negocio 404
+  type: http
+  seq: 10
+}
+
+get {
+  url: {{baseUrl}}/pedidos/{{pedidoId}}
+  body: none
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{tokenNegocio2}}
+}
+
+assert {
+  res.status: eq 404
+}

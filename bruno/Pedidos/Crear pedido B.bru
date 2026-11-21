@@ -1,0 +1,36 @@
+meta {
+  name: Crear pedido B
+  type: http
+  seq: 6
+}
+
+post {
+  url: {{baseUrl}}/pedidos
+  body: json
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{tokenNegocio}}
+}
+
+body:json {
+  {
+    "clienteNombre": "Cliente Prueba B",
+    "clienteTelefono": "9515550160",
+    "clienteEmail": "cliente3@rutaoax.com",
+    "direccion": "Calle Prueba 100",
+    "zona": "Jalatlaco",
+    "articulos": 2,
+    "total": 150.5,
+    "notas": "Prueba Bruno"
+  }
+}
+
+vars:post-response {
+  pedidoIdB: res.body.id
+}
+
+assert {
+  res.status: eq 201
+}

@@ -1,0 +1,20 @@
+meta {
+  name: Filtrar por estado PENDIENTE
+  type: http
+  seq: 2
+}
+
+get {
+  url: {{baseUrl}}/pedidos?estado=PENDIENTE
+  body: none
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{tokenNegocio}}
+}
+
+assert {
+  res.status: eq 200
+  res.body.totalElements: gte 2
+}

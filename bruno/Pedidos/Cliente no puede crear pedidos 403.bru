@@ -1,0 +1,32 @@
+meta {
+  name: Cliente no puede crear pedidos 403
+  type: http
+  seq: 11
+}
+
+post {
+  url: {{baseUrl}}/pedidos
+  body: json
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{tokenCliente}}
+}
+
+body:json {
+  {
+    "clienteNombre": "Intruso",
+    "clienteTelefono": "9515550160",
+    "clienteEmail": "cliente3@rutaoax.com",
+    "direccion": "Calle Prueba 100",
+    "zona": "Jalatlaco",
+    "articulos": 2,
+    "total": 150.5,
+    "notas": "Prueba Bruno"
+  }
+}
+
+assert {
+  res.status: eq 403
+}

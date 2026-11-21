@@ -1,0 +1,23 @@
+meta {
+  name: Repartidor disponible para asignar
+  type: http
+  seq: 14
+}
+
+get {
+  url: {{baseUrl}}/equipo/disponibles?fecha=2030-06-15
+  body: none
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{tokenNegocio}}
+}
+
+vars:post-response {
+  repartidorAsignId: res.body[0].id
+}
+
+assert {
+  res.status: eq 200
+}

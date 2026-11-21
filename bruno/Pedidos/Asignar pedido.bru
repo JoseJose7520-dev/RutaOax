@@ -1,0 +1,33 @@
+meta {
+  name: Asignar pedido
+  type: http
+  seq: 17
+}
+
+post {
+  url: {{baseUrl}}/pedidos/asignar
+  body: json
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{tokenNegocio}}
+}
+
+body:json {
+  {
+    "pedidoIds": [
+      "{{pedidoId}}"
+    ],
+    "repartidorId": "{{repartidorAsignId}}",
+    "vehiculoId": "{{vehiculoCupoId}}",
+    "fecha": "2030-06-15"
+  }
+}
+
+assert {
+  res.status: eq 200
+  res.body.estado: eq PLANEADO
+  res.body.total: eq 1
+  res.body.paradas[0].estado: eq ASIGNADO
+}

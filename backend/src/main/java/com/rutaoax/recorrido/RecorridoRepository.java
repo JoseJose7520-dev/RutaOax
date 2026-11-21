@@ -3,6 +3,7 @@ package com.rutaoax.recorrido;
 import java.time.LocalDate;
 import java.util.Collection;
 import java.util.List;
+import java.util.Optional;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
@@ -28,4 +29,11 @@ public interface RecorridoRepository extends JpaRepository<Recorrido, Long> {
     boolean existsByVehiculoIdAndFechaGreaterThanEqualAndEstadoNot(Long vehiculoId, LocalDate fecha, EstadoRecorrido estado);
 
     boolean existsByRepartidorIdAndFechaGreaterThanEqualAndEstadoNot(Long repartidorId, LocalDate fecha, EstadoRecorrido estado);
+
+    Optional<Recorrido> findByRepartidorIdAndFecha(Long repartidorId, LocalDate fecha);
+
+    List<Recorrido> findByVehiculoIdAndFecha(Long vehiculoId, LocalDate fecha);
+
+    @Query("select r from Recorrido r join fetch r.repartidor rep join fetch rep.usuario left join fetch r.vehiculo where r.id = :id")
+    Optional<Recorrido> detalle(@Param("id") Long id);
 }

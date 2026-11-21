@@ -1,0 +1,20 @@
+meta {
+  name: Cliente ve solo los suyos
+  type: http
+  seq: 13
+}
+
+get {
+  url: {{baseUrl}}/pedidos
+  body: none
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{tokenCliente}}
+}
+
+assert {
+  res.status: eq 200
+  res.body.totalElements: gte 1
+}

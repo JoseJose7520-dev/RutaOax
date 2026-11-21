@@ -1,0 +1,20 @@
+meta {
+  name: Desasignar pedido
+  type: http
+  seq: 21
+}
+
+post {
+  url: {{baseUrl}}/pedidos/{{pedidoId}}/desasignar
+  body: none
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{tokenNegocio}}
+}
+
+assert {
+  res.status: eq 200
+  res.body.estado: eq PENDIENTE
+}

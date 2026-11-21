@@ -4,6 +4,9 @@ import RedirectInicio from './auth/RedirectInicio';
 import RoleRoute from './auth/RoleRoute';
 import AppLayout from './components/layout/AppLayout';
 import PaginaPendiente from './pages/PaginaPendiente';
+import EquipoPage from './pages/negocio/EquipoPage';
+import PedidosPage from './pages/negocio/PedidosPage';
+import VehiculosPage from './pages/negocio/VehiculosPage';
 import PerfilPage from './pages/perfil/PerfilPage';
 import LoginPage from './pages/auth/LoginPage';
 import RecuperarPage from './pages/auth/RecuperarPage';
@@ -24,9 +27,9 @@ export default function App() {
           <Route path="/perfil" element={<PerfilPage />} />
           <Route element={<RoleRoute roles={['NEGOCIO']} />}>
             <Route path="/negocio" element={<PaginaPendiente titulo="Panel del negocio" />} />
-            <Route path="/negocio/pedidos" element={<PaginaPendiente titulo="Pedidos y asignación" />} />
-            <Route path="/negocio/equipo" element={<PaginaPendiente titulo="Equipo de reparto" />} />
-            <Route path="/negocio/vehiculos" element={<PaginaPendiente titulo="Vehículos" />} />
+            <Route path="/negocio/pedidos" element={<PedidosPage />} />
+            <Route path="/negocio/equipo" element={<EquipoPage />} />
+            <Route path="/negocio/vehiculos" element={<VehiculosPage />} />
             <Route path="/negocio/mensajes" element={<PaginaPendiente titulo="Mensajes" />} />
           </Route>
           <Route element={<RoleRoute roles={['REPARTIDOR']} tipoRepartidor="EMPRESA" />}>
