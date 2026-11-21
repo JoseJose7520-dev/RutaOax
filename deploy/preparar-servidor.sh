@@ -6,7 +6,7 @@ set -euo pipefail
 
 DOMINIO="rutaoax.devs8.tech"
 IP_ESPERADA="179.197.84.34"
-PUERTO_API="9250"
+PUERTO_API="9260"
 BASE="/opt/rutaoax"
 
 [ "$(id -u)" -eq 0 ] || { echo "ERROR: ejecuta este script como root."; exit 1; }
@@ -138,7 +138,7 @@ After=network.target mysql.service
 [Service]
 User=rutaoax
 WorkingDirectory=${BASE}/backend
-ExecStart=/usr/bin/java -Duser.timezone=America/Mexico_City -jar ${BASE}/backend/app.jar --spring.config.additional-location=file:${BASE}/config/
+ExecStart=/usr/bin/java -Xms128m -Xmx384m -Duser.timezone=America/Mexico_City -jar ${BASE}/backend/app.jar --spring.config.additional-location=file:${BASE}/config/
 Restart=always
 RestartSec=5
 
