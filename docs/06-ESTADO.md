@@ -4,7 +4,7 @@
 
 ## Resumen
 Fase actual: **DÍA 2 · Parte 3 entregada** (HU-14 panel del negocio, HU-15 publicar y reasignar, y la mejora del panel de asignación; **por verificar** con `docs/dia-2/EJECUTAR-DIA-2-PARTE-3.md`). Con esto termina el Día 2.
-- Verificado por el equipo en local: Día 1 (salvo el despliegue) y Día 2 Partes 1 y 2. **HU-09 (primer despliegue con HTTPS) sigue sin ejecutarse.**
+- Verificado por el equipo en local: Día 1 y Día 2 Partes 1 y 2. **HU-09 desplegado el 21/11 en https://rutaoax.devs8.tech.**
 - Parte 3 entrega: `GET /api/negocio/resumen` y la pantalla `/negocio` (indicadores, repartidores de hoy y "Requiere atención"); `POST /pedidos/{id}/publicar` y `/reasignar` con sus botones; y el panel de asignación ahora **puede sumar pedidos a una ruta ya planeada** (resuelve la limitación anotada; era necesario para "ver el cupo bajar").
 - Siguiente: Día 3 (repartidores, cliente, mensajes y comunicaciones reales). Antes, cerrar el Día 2 con `docs/dia-2/03-CIERRE-DIA-2.md` y, de preferencia, ejecutar HU-09.
 - Interfaces congeladas en `docs/dia-1/01-INTERFACES-COMPARTIDAS.md` (con anexos hasta el Día 2 Parte 3).
@@ -34,7 +34,7 @@ Estados: ⬜ pendiente · 🟨 en curso o por verificar · ✅ hecha y verificad
 | B3 Registro | HU-03 | B | ✅ | Verificado |
 | B4 Recuperar y restablecer | HU-06 | B | ✅ | Verificado por el equipo |
 | B5 Rutas protegidas, navbar y perfil | HU-07/05 | B | ✅ | Verificado en local |
-| D Despliegue con HTTPS | HU-09 | A+B | 🟨 | Entregado en la Parte 4 (script de servidor y deploy.ps1); falta ejecutarlo |
+| D Despliegue con HTTPS | HU-09 | A+B | ✅ | Desplegado el 21/11 en https://rutaoax.devs8.tech (API en el puerto 9260 del VPS; el 9250 ya lo usa otra app) |
 
 ## Plan del Día 2 (Negocio)
 | Tarea | HU | Responsable | Estado | Notas |
@@ -60,7 +60,7 @@ Estados: ⬜ pendiente · 🟨 en curso o por verificar · ✅ hecha y verificad
 | 06 | Recuperar contraseña | ✅ | Verificado; correo real pendiente de Postfix (HU-26) |
 | 07 | Rutas protegidas, navbar y perfil | ✅ | Verificado en local |
 | 08 | Seguridad por rol | ✅ | Verificado con la carpeta Seguridad de Bruno |
-| 09 | Primer despliegue HTTPS | 🟨 | Scripts entregados; falta ejecutar el despliegue |
+| 09 | Primer despliegue HTTPS | ✅ | Desplegado el 21/11; certificado propio para rutaoax.devs8.tech, swap de 2 GB y límite de memoria -Xmx384m |
 | 10 | Vehículos | ✅ | Verificado |
 | 11 | Equipo de reparto | ✅ | Verificado |
 | 12 | Pedidos del negocio | ✅ | Verificado |

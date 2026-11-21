@@ -5,7 +5,7 @@ Set-Location $raiz
 
 Write-Host "1/4 Compilando el backend..."
 Push-Location backend
-mvn -q -DskipTests package
+.\mvnw.cmd -q -DskipTests package
 if ($LASTEXITCODE -ne 0) { throw "Falló la compilación del backend" }
 Pop-Location
 

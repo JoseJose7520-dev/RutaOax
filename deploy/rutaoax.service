@@ -5,7 +5,7 @@ After=network.target mysql.service
 [Service]
 User=rutaoax
 WorkingDirectory=/opt/rutaoax/backend
-ExecStart=/usr/bin/java -jar /opt/rutaoax/backend/app.jar --spring.config.additional-location=file:/opt/rutaoax/config/
+ExecStart=/usr/bin/java -Xms128m -Xmx384m -Duser.timezone=America/Mexico_City -jar /opt/rutaoax/backend/app.jar --spring.config.additional-location=file:/opt/rutaoax/config/
 Restart=always
 RestartSec=5
 
