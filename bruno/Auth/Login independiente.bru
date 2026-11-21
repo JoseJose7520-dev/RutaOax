@@ -1,0 +1,26 @@
+meta {
+  name: Login independiente
+  type: http
+  seq: 4
+}
+
+post {
+  url: {{baseUrl}}/auth/login
+  body: json
+  auth: none
+}
+
+body:json {
+  {
+    "email": "independiente1@rutaoax.com",
+    "password": "Ruta#2026"
+  }
+}
+
+vars:post-response {
+  tokenIndependiente: res.body.token
+}
+
+assert {
+  res.status: eq 200
+}

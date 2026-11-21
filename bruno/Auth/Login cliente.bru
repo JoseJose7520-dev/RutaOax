@@ -1,0 +1,26 @@
+meta {
+  name: Login cliente
+  type: http
+  seq: 5
+}
+
+post {
+  url: {{baseUrl}}/auth/login
+  body: json
+  auth: none
+}
+
+body:json {
+  {
+    "email": "cliente1@rutaoax.com",
+    "password": "Ruta#2026"
+  }
+}
+
+vars:post-response {
+  tokenCliente: res.body.token
+}
+
+assert {
+  res.status: eq 200
+}

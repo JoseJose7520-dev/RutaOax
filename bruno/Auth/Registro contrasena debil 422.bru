@@ -1,0 +1,25 @@
+meta {
+  name: Registro contrasena debil 422
+  type: http
+  seq: 9
+}
+
+post {
+  url: {{baseUrl}}/auth/register
+  body: json
+  auth: none
+}
+
+body:json {
+  {
+    "nombre": "Debil",
+    "email": "debil@rutaoax.com",
+    "password": "12345",
+    "tipoCuenta": "CLIENTE"
+  }
+}
+
+assert {
+  res.status: eq 422
+  res.body.errores: isDefined
+}

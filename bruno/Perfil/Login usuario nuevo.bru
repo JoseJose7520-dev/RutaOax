@@ -1,0 +1,26 @@
+meta {
+  name: Login usuario nuevo
+  type: http
+  seq: 4
+}
+
+post {
+  url: {{baseUrl}}/auth/login
+  body: json
+  auth: none
+}
+
+body:json {
+  {
+    "email": "{{emailNuevo}}",
+    "password": "Prueba#2026"
+  }
+}
+
+vars:post-response {
+  tokenNuevo: res.body.token
+}
+
+assert {
+  res.status: eq 200
+}

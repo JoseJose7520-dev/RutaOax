@@ -1,0 +1,26 @@
+meta {
+  name: Cambiar contrasena actual incorrecta 409
+  type: http
+  seq: 3
+}
+
+put {
+  url: {{baseUrl}}/perfil/password
+  body: json
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{tokenCliente}}
+}
+
+body:json {
+  {
+    "actual": "Incorrecta#1",
+    "nueva": "Nueva#2026"
+  }
+}
+
+assert {
+  res.status: eq 409
+}

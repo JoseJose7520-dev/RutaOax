@@ -1,0 +1,26 @@
+meta {
+  name: Login repartidor empresa
+  type: http
+  seq: 3
+}
+
+post {
+  url: {{baseUrl}}/auth/login
+  body: json
+  auth: none
+}
+
+body:json {
+  {
+    "email": "repartidor1@rutaoax.com",
+    "password": "Ruta#2026"
+  }
+}
+
+vars:post-response {
+  tokenRepartidor: res.body.token
+}
+
+assert {
+  res.status: eq 200
+}

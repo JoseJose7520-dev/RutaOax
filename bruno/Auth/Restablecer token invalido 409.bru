@@ -1,0 +1,22 @@
+meta {
+  name: Restablecer token invalido 409
+  type: http
+  seq: 15
+}
+
+post {
+  url: {{baseUrl}}/auth/reset-password
+  body: json
+  auth: none
+}
+
+body:json {
+  {
+    "token": "token-falso",
+    "password": "Nueva#2026"
+  }
+}
+
+assert {
+  res.status: eq 409
+}

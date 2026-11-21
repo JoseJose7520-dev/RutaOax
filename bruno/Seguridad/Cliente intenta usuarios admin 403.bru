@@ -1,0 +1,19 @@
+meta {
+  name: Cliente intenta usuarios admin 403
+  type: http
+  seq: 2
+}
+
+get {
+  url: {{baseUrl}}/admin/usuarios
+  body: none
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{tokenCliente}}
+}
+
+assert {
+  res.status: eq 403
+}

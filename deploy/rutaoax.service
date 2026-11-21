@@ -1,0 +1,13 @@
+[Unit]
+Description=RutaOax API
+After=network.target mysql.service
+
+[Service]
+User=rutaoax
+WorkingDirectory=/opt/rutaoax/backend
+ExecStart=/usr/bin/java -jar /opt/rutaoax/backend/app.jar --spring.config.additional-location=file:/opt/rutaoax/config/
+Restart=always
+RestartSec=5
+
+[Install]
+WantedBy=multi-user.target

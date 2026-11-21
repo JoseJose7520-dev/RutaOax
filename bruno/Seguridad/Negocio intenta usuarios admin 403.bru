@@ -1,0 +1,19 @@
+meta {
+  name: Negocio intenta usuarios admin 403
+  type: http
+  seq: 3
+}
+
+get {
+  url: {{baseUrl}}/admin/usuarios
+  body: none
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{tokenNegocio}}
+}
+
+assert {
+  res.status: eq 403
+}

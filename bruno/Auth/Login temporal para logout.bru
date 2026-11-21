@@ -1,0 +1,26 @@
+meta {
+  name: Login temporal para logout
+  type: http
+  seq: 11
+}
+
+post {
+  url: {{baseUrl}}/auth/login
+  body: json
+  auth: none
+}
+
+body:json {
+  {
+    "email": "cliente2@rutaoax.com",
+    "password": "Ruta#2026"
+  }
+}
+
+vars:post-response {
+  tokenLogout: res.body.token
+}
+
+assert {
+  res.status: eq 200
+}

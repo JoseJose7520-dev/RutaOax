@@ -1,0 +1,19 @@
+meta {
+  name: Recurso inexistente 404
+  type: http
+  seq: 1
+}
+
+get {
+  url: {{baseUrl}}/ruta-que-no-existe
+  body: none
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{tokenAdmin}}
+}
+
+assert {
+  res.status: eq 404
+}

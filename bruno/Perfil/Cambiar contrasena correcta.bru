@@ -1,0 +1,26 @@
+meta {
+  name: Cambiar contrasena correcta
+  type: http
+  seq: 5
+}
+
+put {
+  url: {{baseUrl}}/perfil/password
+  body: json
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{tokenNuevo}}
+}
+
+body:json {
+  {
+    "actual": "Prueba#2026",
+    "nueva": "Nueva#2026"
+  }
+}
+
+assert {
+  res.status: eq 204
+}

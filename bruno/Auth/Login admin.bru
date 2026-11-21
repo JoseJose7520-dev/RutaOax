@@ -1,0 +1,26 @@
+meta {
+  name: Login admin
+  type: http
+  seq: 1
+}
+
+post {
+  url: {{baseUrl}}/auth/login
+  body: json
+  auth: none
+}
+
+body:json {
+  {
+    "email": "admin@rutaoax.com",
+    "password": "Admin#2026"
+  }
+}
+
+vars:post-response {
+  tokenAdmin: res.body.token
+}
+
+assert {
+  res.status: eq 200
+}

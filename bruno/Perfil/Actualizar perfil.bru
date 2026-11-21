@@ -1,0 +1,27 @@
+meta {
+  name: Actualizar perfil
+  type: http
+  seq: 2
+}
+
+put {
+  url: {{baseUrl}}/perfil
+  body: json
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{tokenCliente}}
+}
+
+body:json {
+  {
+    "nombre": "Carla Ríos",
+    "telefono": "9515550110",
+    "avatarUrl": null
+  }
+}
+
+assert {
+  res.status: eq 200
+}

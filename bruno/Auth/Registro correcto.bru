@@ -1,0 +1,29 @@
+meta {
+  name: Registro correcto
+  type: http
+  seq: 8
+}
+
+post {
+  url: {{baseUrl}}/auth/register
+  body: json
+  auth: none
+}
+
+body:json {
+  {
+    "nombre": "Usuario Prueba",
+    "email": "{{emailNuevo}}",
+    "password": "Prueba#2026",
+    "telefono": "9515550199",
+    "tipoCuenta": "CLIENTE"
+  }
+}
+
+script:pre-request {
+  bru.setVar("emailNuevo", "prueba" + Date.now() + "@rutaoax.com");
+}
+
+assert {
+  res.status: eq 201
+}

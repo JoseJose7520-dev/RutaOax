@@ -1,0 +1,22 @@
+meta {
+  name: Login incorrecto 401
+  type: http
+  seq: 6
+}
+
+post {
+  url: {{baseUrl}}/auth/login
+  body: json
+  auth: none
+}
+
+body:json {
+  {
+    "email": "admin@rutaoax.com",
+    "password": "Mala#1234"
+  }
+}
+
+assert {
+  res.status: eq 401
+}
