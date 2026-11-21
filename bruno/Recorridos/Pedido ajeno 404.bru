@@ -1,0 +1,25 @@
+meta {
+  name: Pedido ajeno 404
+  type: http
+  seq: 14
+}
+
+patch {
+  url: {{baseUrl}}/pedidos/{{flujoPedidoId}}/estado
+  body: json
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{tokenRepartidor}}
+}
+
+body:json {
+  {
+    "estado": "ENTREGADO"
+  }
+}
+
+assert {
+  res.status: eq 404
+}

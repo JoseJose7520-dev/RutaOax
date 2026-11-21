@@ -1,0 +1,28 @@
+meta {
+  name: Marcar no entregado
+  type: http
+  seq: 17
+}
+
+patch {
+  url: {{baseUrl}}/pedidos/{{flujoPedido2Id}}/estado
+  body: json
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{tokenFlujo}}
+}
+
+body:json {
+  {
+    "estado": "NO_ENTREGADO",
+    "motivo": "No había nadie en el domicilio"
+  }
+}
+
+assert {
+  res.status: eq 200
+  res.body.estado: eq NO_ENTREGADO
+  res.body.notas: contains No había nadie
+}

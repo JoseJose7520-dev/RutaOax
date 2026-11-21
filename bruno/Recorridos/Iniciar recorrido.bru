@@ -1,0 +1,22 @@
+meta {
+  name: Iniciar recorrido
+  type: http
+  seq: 10
+}
+
+post {
+  url: {{baseUrl}}/recorridos/{{flujoRecId}}/iniciar
+  body: none
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{tokenFlujo}}
+}
+
+assert {
+  res.status: eq 200
+  res.body.estado: eq EN_CURSO
+  res.body.paradas[0].estado: eq EN_CAMINO
+  res.body.paradas[1].estado: eq EN_CAMINO
+}

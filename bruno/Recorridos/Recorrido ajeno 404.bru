@@ -1,0 +1,19 @@
+meta {
+  name: Recorrido ajeno 404
+  type: http
+  seq: 9
+}
+
+get {
+  url: {{baseUrl}}/recorridos/{{flujoRecId}}
+  body: none
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{tokenRepartidor}}
+}
+
+assert {
+  res.status: eq 404
+}

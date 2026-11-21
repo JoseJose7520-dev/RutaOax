@@ -1,0 +1,25 @@
+meta {
+  name: Cliente no puede marcar 403
+  type: http
+  seq: 15
+}
+
+patch {
+  url: {{baseUrl}}/pedidos/{{flujoPedidoId}}/estado
+  body: json
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{tokenCliente}}
+}
+
+body:json {
+  {
+    "estado": "ENTREGADO"
+  }
+}
+
+assert {
+  res.status: eq 403
+}

@@ -1,0 +1,26 @@
+meta {
+  name: Login repartidor del flujo
+  type: http
+  seq: 2
+}
+
+post {
+  url: {{baseUrl}}/auth/login
+  body: json
+  auth: none
+}
+
+body:json {
+  {
+    "email": "{{flujoEmail}}",
+    "password": "Equipo#2026"
+  }
+}
+
+vars:post-response {
+  tokenFlujo: res.body.token
+}
+
+assert {
+  res.status: eq 200
+}

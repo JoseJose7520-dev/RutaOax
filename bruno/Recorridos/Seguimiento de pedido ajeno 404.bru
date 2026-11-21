@@ -1,0 +1,19 @@
+meta {
+  name: Seguimiento de pedido ajeno 404
+  type: http
+  seq: 20
+}
+
+get {
+  url: {{baseUrl}}/pedidos/{{flujoPedido2Id}}/seguimiento
+  body: none
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{tokenCliente}}
+}
+
+assert {
+  res.status: eq 404
+}

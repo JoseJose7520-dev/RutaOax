@@ -1,0 +1,36 @@
+meta {
+  name: Crear vehiculo del flujo
+  type: http
+  seq: 3
+}
+
+post {
+  url: {{baseUrl}}/vehiculos
+  body: json
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{tokenNegocio}}
+}
+
+body:json {
+  {
+    "tipo": "BICICLETA",
+    "placa": "{{flujoPlaca}}",
+    "capacidad": 5,
+    "estado": "ACTIVO"
+  }
+}
+
+vars:post-response {
+  flujoVehId: res.body.id
+}
+
+script:pre-request {
+  bru.setVar("flujoPlaca", "F" + Date.now().toString().slice(-8));
+}
+
+assert {
+  res.status: eq 201
+}

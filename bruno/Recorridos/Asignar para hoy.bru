@@ -1,0 +1,37 @@
+meta {
+  name: Asignar para hoy
+  type: http
+  seq: 6
+}
+
+post {
+  url: {{baseUrl}}/pedidos/asignar
+  body: json
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{tokenNegocio}}
+}
+
+body:json {
+  {
+    "pedidoIds": [
+      "{{flujoPedidoId}}",
+      "{{flujoPedido2Id}}"
+    ],
+    "repartidorId": "{{flujoRepId}}",
+    "vehiculoId": "{{flujoVehId}}",
+    "fecha": "{{hoy}}"
+  }
+}
+
+vars:post-response {
+  flujoRecId: res.body.id
+}
+
+assert {
+  res.status: eq 200
+  res.body.estado: eq PLANEADO
+  res.body.total: eq 2
+}
