@@ -49,28 +49,31 @@ Base: `/api`. JSON en UTF-8. Todas las rutas requieren `Authorization: Bearer <t
 
 ## Negocio (`/api/negocio`) — NEGOCIO
 - GET `/negocio/resumen` → `{ sinAsignar, enCamino, entregadosHoy, mensajesNuevos, repartidoresHoy:[{ repartidorId, nombre, vehiculo, entregados, total }], atencion:[{ tipo:"NO_ENTREGADO"|"MENSAJE"|"SEGURO", titulo, detalle, referenciaId }] }`
+  Definiciones: `sinAsignar` = pedidos del negocio PENDIENTES; `enCamino` = EN_CAMINO; `entregadosHoy` = ENTREGADOS cuya última actualización fue hoy; `mensajesNuevos` = mensajes no leídos dirigidos al propietario del negocio; `repartidoresHoy` = repartidores con recorrido de hoy PLANEADO o EN_CURSO con su vehículo y avance; `atencion` = hasta 5 pedidos NO_ENTREGADO (`referenciaId` = pedido), hasta 5 conversaciones con mensajes sin leer (`referenciaId` = pedido) y hasta 5 vehículos con seguro vencido o que vence en 7 días o menos (`referenciaId` = vehículo). Solo rol NEGOCIO (ADMIN → 403).
 
 ### Equipo (`/api/equipo`) — NEGOCIO
 - GET `/equipo?q=&page=&size=` → página de `{ id, usuario:UsuarioDTO, vehiculoHoy, entregadosHoy, totalHoy, estadoHoy: "EN_RUTA"|"LIBRE" }`
 - POST `/equipo` `{ nombre*, email*, password*, telefono }` → 201 (crea usuario REPARTIDOR con `negocio_id` del negocio)
 - PUT `/equipo/{repartidorId}` `{ nombre*, telefono }` → 200
-- DELETE `/equipo/{repartidorId}` → 204 (desactiva la cuenta; 409 si tiene recorrido EN_CURSO)
-- GET `/equipo/disponibles?fecha=` → lista corta `[{id,nombre}]` de repartidores sin recorrido ese día (para el selector de asignación)
+- DELETE `/equipo/{repartidorId}` → 204 (desactiva la cuenta; **409 si tiene recorridos de hoy o futuros sin finalizar**)
+- POST y PUT de `/equipo` responden con el mismo objeto `{ id, usuario, vehiculoHoy, entregadosHoy, totalHoy, estadoHoy }` del listado. `id` es el id del **repartidor**. `estadoHoy` = `EN_RUTA` solo si su recorrido de hoy está EN_CURSO; "hoy" considera solo recorridos PLANEADO o EN_CURSO. `/equipo` es solo para el rol NEGOCIO (el ADMIN recibe 403).
+- GET `/equipo/disponibles?fecha=` → `[{ id, nombre, vehiculoId, paradas }]` de los repartidores a los que se puede asignar ese día: **sin recorrido o con un recorrido PLANEADO** (aún no sale). Si ya tienen ruta, `vehiculoId` es el vehículo de esa ruta y `paradas` cuántas llevan; si no, `vehiculoId` es null y `paradas` 0. Es el selector del panel de asignación.
 
 ### Vehículos (`/api/vehiculos`) — NEGOCIO (pertenencia)
-- GET `/vehiculos?q=&tipo=&estado=&page=&size=` · GET `/vehiculos/{id}` · POST `/vehiculos` → 201 · PUT `/vehiculos/{id}` · DELETE `/vehiculos/{id}` → 204 (409 si tiene recorridos futuros)
-- GET `/vehiculos/disponibles?fecha=` → `[{id,tipo,placa,capacidad,cupoLibre}]` ACTIVO y sin recorrido ese día.
+- GET `/vehiculos?q=&tipo=&estado=&page=&size=` · GET `/vehiculos/{id}` · POST `/vehiculos` → 201 · PUT `/vehiculos/{id}` · DELETE `/vehiculos/{id}` → 204 (409 si tiene recorridos de hoy o futuros sin finalizar)
+- `q` busca por placa (sin distinguir mayúsculas); la placa se guarda en mayúsculas y es única (409). `repartidorHoy` es el nombre del repartidor que usa el vehículo hoy (o null). El ADMIN puede listar, ver, editar y borrar cualquier vehículo, pero no crear (403).
+- GET `/vehiculos/disponibles?fecha=` → `[{ id, tipo, placa, capacidad, cupoLibre, repartidorId }]` de vehículos ACTIVOS **sin recorrido ese día o en un recorrido PLANEADO**. `cupoLibre` = capacidad − paradas ya asignadas; `repartidorId` viene lleno cuando el vehículo ya está en la ruta planeada de ese repartidor (solo él puede usarlo ese día).
 
 ## Pedidos (`/api/pedidos`)
 Alcance de los listados según rol: NEGOCIO → los de su negocio · CLIENTE → los suyos (`cliente_id`) · REPARTIDOR → los de sus recorridos · ADMIN → todos.
 - GET `/pedidos?q=&estado=&zona=&modalidad=&asignado=&page=&size=` → página de `PedidoDTO` (`q` busca en folio, cliente y dirección; `asignado=false` filtra los sin recorrido).
-- POST `/pedidos` `PedidoRequest` → 201. NEGOCIO: modalidad NEGOCIO por defecto (o ABIERTO si la manda). CLIENTE: siempre ABIERTO, sin negocio, `cliente_id` = él. Calcula lat/lng por zona.
-- GET `/pedidos/{id}` · PUT `/pedidos/{id}` (NEGOCIO dueño, solo si está PENDIENTE o ASIGNADO) · DELETE `/pedidos/{id}` → 204 (409 si EN_CAMINO o ENTREGADO)
-- POST `/pedidos/asignar` `{ pedidoIds*:[1,2], repartidorId*, vehiculoId*, fecha* }` → 200 `RecorridoDTO`. NEGOCIO. Reglas (409 si falla): pedidos propios y PENDIENTE; repartidor del negocio y sin recorrido EN_CURSO ese día; vehículo ACTIVO del negocio; `paradas + nuevos <= capacidad`. Crea o reutiliza el recorrido (repartidor + fecha), pone los pedidos en ASIGNADO y los ordena por cercanía desde el último punto.
-- POST `/pedidos/{id}/desasignar` → 200. NEGOCIO; solo ASIGNADO → PENDIENTE.
-- POST `/pedidos/{id}/publicar` → 200. NEGOCIO; solo PENDIENTE: cambia modalidad a ABIERTO.
+- POST `/pedidos` `PedidoRequest` → 201. NEGOCIO: modalidad NEGOCIO por defecto (o ABIERTO si la manda). CLIENTE: siempre ABIERTO, sin negocio, `cliente_id` = él (**el rol CLIENTE se habilita en HU-22; por ahora solo NEGOCIO**). Calcula lat/lng por zona. Si el correo `clienteEmail` no corresponde a una cuenta CLIENTE, el pedido queda sin cliente enlazado.
+- GET `/pedidos/{id}` · PUT `/pedidos/{id}` (NEGOCIO dueño, solo si está PENDIENTE o ASIGNADO) · DELETE `/pedidos/{id}` → 204 (409 si EN_CAMINO o ENTREGADO). `PUT` y `DELETE`: NEGOCIO dueño o ADMIN. `PUT` **no cambia la modalidad** (se publica con `/publicar`) y, si `clienteEmail` viene vacío, conserva el cliente enlazado. Al eliminar un pedido asignado se renumeran las paradas del recorrido y, si queda vacío, se elimina.
+- POST `/pedidos/asignar` `{ pedidoIds*:[1,2], repartidorId*, vehiculoId*, fecha* }` → 200 `RecorridoDTO`. NEGOCIO. Reglas (409 si falla): pedidos propios y PENDIENTE; repartidor del negocio y sin recorrido EN_CURSO ese día; vehículo ACTIVO del negocio; `paradas + nuevos <= capacidad`. Crea o reutiliza el recorrido (repartidor + fecha), pone los pedidos en ASIGNADO y los ordena por cercanía desde el último punto (o desde el Centro Histórico si el recorrido estaba vacío). Detalles: solo rol NEGOCIO (ADMIN → 403); `fecha` anterior a hoy → 422; pedido, repartidor o vehículo de otro negocio → 404; además 409 si el vehículo está en mantenimiento, ya está asignado a otro repartidor ese día, o el repartidor tiene otro vehículo ese día o su recorrido ya no está PLANEADO. La capacidad cuenta pedidos. Asignar deja `modalidad = NEGOCIO`.
+- POST `/pedidos/{id}/desasignar` → 200 `PedidoDTO`. NEGOCIO; solo ASIGNADO → PENDIENTE; se renumeran las paradas y, si el recorrido queda vacío, se elimina.
+- POST `/pedidos/{id}/publicar` → 200 `PedidoDTO`. NEGOCIO; solo PENDIENTE: cambia modalidad a ABIERTO y, si no tenía, pone como `origen` el nombre del negocio. 409 si no está PENDIENTE o ya está publicado; pedido ajeno → 404. Mientras nadie lo tome, el negocio todavía puede asignarlo a su equipo (al asignarlo vuelve a modalidad NEGOCIO).
 - PATCH `/pedidos/{id}/estado` `{ estado*: ENTREGADO|NO_ENTREGADO, motivo }` → 200 `PedidoDTO`. REPARTIDOR de ese recorrido, solo desde EN_CAMINO. ENTREGADO dispara WhatsApp; si todas las paradas terminan, el recorrido pasa a FINALIZADO.
-- POST `/pedidos/{id}/reasignar` → 200. NEGOCIO; NO_ENTREGADO → PENDIENTE y se quita del recorrido.
+- POST `/pedidos/{id}/reasignar` → 200 `PedidoDTO`. NEGOCIO; solo NO_ENTREGADO → PENDIENTE, se quita del recorrido (sin renumerar las demás paradas) y conserva su modalidad. 409 si el pedido no está NO_ENTREGADO; ajeno → 404.
 - GET `/pedidos/{id}/seguimiento` → CLIENTE dueño (o NEGOCIO/ADMIN):
 ```json
 { "pedidoId": 1038, "estado": "EN_CAMINO", "negocio": {"id":1,"nombre":"Dulces del Valle"},

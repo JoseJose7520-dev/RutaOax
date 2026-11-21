@@ -1,6 +1,7 @@
 import { useCallback, useEffect, useState } from 'react';
+import { useSearchParams } from 'react-router-dom';
 import { leerError } from '../../api/errores';
-import { desasignarPedido, eliminarPedido, listarPedidos } from '../../api/pedidosApi';
+import { desasignarPedido, eliminarPedido, listarPedidos, publicarPedido, reasignarPedido } from '../../api/pedidosApi';
 import { listarZonas } from '../../api/zonasApi';
 import ConfirmDialog from '../../components/ui/ConfirmDialog';
 import { Cargando, ErrorRed, Mensaje, Vacio } from '../../components/ui/Feedback';
@@ -11,9 +12,12 @@ import useDebounce from '../../utils/useDebounce';
 import AsignarPanel from './AsignarPanel';
 import PedidoFormModal from './PedidoFormModal';
 
+const ESTADOS = ['PENDIENTE', 'ASIGNADO', 'EN_CAMINO', 'ENTREGADO', 'NO_ENTREGADO'];
+
 export default function PedidosPage() {
+  const [params] = useSearchParams();
   const [q, setQ] = useState('');
-  const [estado, setEstado] = useState('');
+  const [estado, setEstado] = useState(() => (ESTADOS.includes(params.get('estado')) ? params.get('estado') : ''));
   const [zona, setZona] = useState('');
   const [modalidad, setModalidad] = useState('');
   const [tamano, setTamano] = useState(10);
@@ -29,6 +33,8 @@ export default function PedidosPage() {
   const [formulario, setFormulario] = useState(null);
   const [aEliminar, setAEliminar] = useState(null);
   const [aDesasignar, setADesasignar] = useState(null);
+  const [aPublicar, setAPublicar] = useState(null);
+  const [aReasignar, setAReasignar] = useState(null);
   const [procesando, setProcesando] = useState(false);
 
   useEffect(() => {
@@ -115,6 +121,36 @@ export default function PedidosPage() {
     }
   };
 
+  const confirmarPublicar = async () => {
+    setProcesando(true);
+    try {
+      await publicarPedido(aPublicar.id);
+      setAviso({ tipo: 'ok', texto: `El pedido #${aPublicar.id} ya está publicado para repartidores independientes.` });
+      setAPublicar(null);
+      cargar();
+    } catch (err) {
+      setAviso({ tipo: 'error', texto: leerError(err).mensaje });
+      setAPublicar(null);
+    } finally {
+      setProcesando(false);
+    }
+  };
+
+  const confirmarReasignar = async () => {
+    setProcesando(true);
+    try {
+      await reasignarPedido(aReasignar.id);
+      setAviso({ tipo: 'ok', texto: `El pedido #${aReasignar.id} volvió a estar sin asignar. Ya puedes asignarlo de nuevo.` });
+      setAReasignar(null);
+      cargar();
+    } catch (err) {
+      setAviso({ tipo: 'error', texto: leerError(err).mensaje });
+      setAReasignar(null);
+    } finally {
+      setProcesando(false);
+    }
+  };
+
   const hayFiltros = Boolean(q.trim() || estado || zona || modalidad);
 
   return (
@@ -196,6 +232,12 @@ export default function PedidosPage() {
                         <td>{p.repartidor ? p.repartidor.nombre : <span className="muted">—</span>}</td>
                         <td>
                           <div className="acciones">
+                            {p.estado === 'PENDIENTE' && p.modalidad !== 'ABIERTO' ? (
+                              <button type="button" className="btn sec sm" onClick={() => setAPublicar(p)}>Publicar</button>
+                            ) : null}
+                            {p.estado === 'NO_ENTREGADO' ? (
+                              <button type="button" className="btn sec sm" onClick={() => setAReasignar(p)}>Reasignar</button>
+                            ) : null}
                             {p.estado === 'ASIGNADO' ? (
                               <button type="button" className="btn sec sm" onClick={() => setADesasignar(p)}>Desasignar</button>
                             ) : null}
@@ -248,6 +290,24 @@ export default function PedidosPage() {
         cargando={procesando}
         onConfirmar={confirmarEliminar}
         onCancelar={() => setAEliminar(null)}
+      />
+      <ConfirmDialog
+        abierto={Boolean(aPublicar)}
+        titulo="Publicar para independientes"
+        mensaje={aPublicar ? `¿Publicar el pedido #${aPublicar.id}? Quedará visible para repartidores independientes, que podrán tomarlo. Mientras nadie lo tome, también puedes asignarlo a tu equipo.` : ''}
+        textoConfirmar="Sí, publicar"
+        cargando={procesando}
+        onConfirmar={confirmarPublicar}
+        onCancelar={() => setAPublicar(null)}
+      />
+      <ConfirmDialog
+        abierto={Boolean(aReasignar)}
+        titulo="Reasignar pedido"
+        mensaje={aReasignar ? `El pedido #${aReasignar.id} no se pudo entregar. ¿Volver a ponerlo como sin asignar para asignarlo de nuevo?` : ''}
+        textoConfirmar="Sí, reasignar"
+        cargando={procesando}
+        onConfirmar={confirmarReasignar}
+        onCancelar={() => setAReasignar(null)}
       />
       <ConfirmDialog
         abierto={Boolean(aDesasignar)}

@@ -7,3 +7,5 @@ export const actualizarPedido = (id, datos) => http.put(`/pedidos/${id}`, datos)
 export const eliminarPedido = (id) => http.delete(`/pedidos/${id}`).then(() => undefined);
 export const asignarPedidos = (datos) => http.post('/pedidos/asignar', datos).then((r) => r.data);
 export const desasignarPedido = (id) => http.post(`/pedidos/${id}/desasignar`).then((r) => r.data);
+export const publicarPedido = (id) => http.post(`/pedidos/${id}/publicar`).then((r) => r.data);
+export const reasignarPedido = (id) => http.post(`/pedidos/${id}/reasignar`).then((r) => r.data);

@@ -1,0 +1,35 @@
+meta {
+  name: Crear pedido para publicar
+  type: http
+  seq: 1
+}
+
+post {
+  url: {{baseUrl}}/pedidos
+  body: json
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{tokenNegocio}}
+}
+
+body:json {
+  {
+    "clienteNombre": "Cliente Publicacion",
+    "clienteTelefono": "9515550170",
+    "direccion": "Calle Publica 5",
+    "zona": "Centro Histórico",
+    "articulos": 1,
+    "total": 99
+  }
+}
+
+vars:post-response {
+  pedidoPubId: res.body.id
+}
+
+assert {
+  res.status: eq 201
+  res.body.modalidad: eq NEGOCIO
+}

@@ -1,0 +1,20 @@
+meta {
+  name: Resumen de otro negocio
+  type: http
+  seq: 2
+}
+
+get {
+  url: {{baseUrl}}/negocio/resumen
+  body: none
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{tokenNegocio2}}
+}
+
+assert {
+  res.status: eq 200
+  res.body.enCamino: eq 0
+}

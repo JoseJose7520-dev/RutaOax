@@ -1,0 +1,19 @@
+meta {
+  name: Reasignar pedido de otro negocio 404
+  type: http
+  seq: 8
+}
+
+post {
+  url: {{baseUrl}}/pedidos/{{pedidoPubId}}/reasignar
+  body: none
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{tokenNegocio2}}
+}
+
+assert {
+  res.status: eq 404
+}

@@ -1,0 +1,19 @@
+meta {
+  name: Cliente no puede publicar 403
+  type: http
+  seq: 5
+}
+
+post {
+  url: {{baseUrl}}/pedidos/{{pedidoPubId}}/publicar
+  body: none
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{tokenCliente}}
+}
+
+assert {
+  res.status: eq 403
+}

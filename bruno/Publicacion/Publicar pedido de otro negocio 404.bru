@@ -1,0 +1,19 @@
+meta {
+  name: Publicar pedido de otro negocio 404
+  type: http
+  seq: 4
+}
+
+post {
+  url: {{baseUrl}}/pedidos/{{pedidoPubId}}/publicar
+  body: none
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{tokenNegocio2}}
+}
+
+assert {
+  res.status: eq 404
+}

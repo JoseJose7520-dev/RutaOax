@@ -1,7 +1,7 @@
 package com.rutaoax.vehiculo;
 
+import java.time.LocalDate;
 import java.util.List;
-import java.util.Optional;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -23,4 +23,6 @@ public interface VehiculoRepository extends JpaRepository<Vehiculo, Long> {
     boolean existsByPlacaAndIdNot(String placa, Long id);
 
     List<Vehiculo> findByNegocioIdAndEstadoOrderByPlaca(Long negocioId, EstadoVehiculo estado);
+
+    List<Vehiculo> findByNegocioIdAndSeguroVenceLessThanEqualOrderBySeguroVence(Long negocioId, LocalDate limite);
 }

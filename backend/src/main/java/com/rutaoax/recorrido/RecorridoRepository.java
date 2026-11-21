@@ -15,6 +15,9 @@ public interface RecorridoRepository extends JpaRepository<Recorrido, Long> {
             + " and r.estado <> com.rutaoax.recorrido.EstadoRecorrido.FINALIZADO")
     List<Recorrido> activosPorVehiculos(@Param("fecha") LocalDate fecha, @Param("vehiculoIds") Collection<Long> vehiculoIds);
 
+    @Query("select r from Recorrido r where r.fecha = :fecha and r.vehiculo.id in :vehiculoIds")
+    List<Recorrido> porVehiculosYFecha(@Param("fecha") LocalDate fecha, @Param("vehiculoIds") Collection<Long> vehiculoIds);
+
     @Query("select r from Recorrido r left join fetch r.vehiculo"
             + " where r.fecha = :fecha and r.repartidor.id in :repartidorIds"
             + " and r.estado <> com.rutaoax.recorrido.EstadoRecorrido.FINALIZADO")

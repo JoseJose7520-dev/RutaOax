@@ -1,0 +1,21 @@
+meta {
+  name: Publicar pedido
+  type: http
+  seq: 2
+}
+
+post {
+  url: {{baseUrl}}/pedidos/{{pedidoPubId}}/publicar
+  body: none
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{tokenNegocio}}
+}
+
+assert {
+  res.status: eq 200
+  res.body.modalidad: eq ABIERTO
+  res.body.estado: eq PENDIENTE
+}

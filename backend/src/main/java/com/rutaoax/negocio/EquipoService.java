@@ -8,6 +8,7 @@ import com.rutaoax.negocio.dto.EquipoDTO;
 import com.rutaoax.negocio.dto.EquipoRequest;
 import com.rutaoax.negocio.dto.EquipoUpdateRequest;
 import com.rutaoax.negocio.dto.RepartidorDisponibleDTO;
+import com.rutaoax.negocio.dto.RepartidorHoyDTO;
 import com.rutaoax.pedido.PedidoRepository;
 import com.rutaoax.recorrido.EstadoRecorrido;
 import com.rutaoax.recorrido.Recorrido;
@@ -19,7 +20,7 @@ import com.rutaoax.usuario.Usuario;
 import com.rutaoax.usuario.UsuarioRepository;
 import com.rutaoax.usuario.dto.PerfilDTO;
 import com.rutaoax.usuario.dto.UsuarioDTO;
-import com.rutaoax.vehiculo.TipoVehiculo;
+import com.rutaoax.vehiculo.EtiquetasVehiculo;
 import java.time.LocalDate;
 import java.util.Comparator;
 import java.util.HashMap;
@@ -123,15 +124,56 @@ public class EquipoService {
         usuarios.save(u);
     }
 
+    /**
+     * Repartidores a los que se les puede asignar ese día: sin recorrido, o con un recorrido PLANEADO
+     * (todavía no sale). Si ya tienen ruta, se informa su vehículo y cuántas paradas llevan.
+     */
     @Transactional(readOnly = true)
     public List<RepartidorDisponibleDTO> disponibles(UsuarioPrincipal yo, LocalDate fecha) {
         Negocio negocio = contexto.negocioDe(yo);
         LocalDate dia = fecha == null ? LocalDate.now() : fecha;
-        Set<Long> ocupados = new HashSet<>(recorridos.repartidorIdsConRecorrido(dia));
-        return repartidores.findByNegocioIdAndUsuarioActivoTrue(negocio.getId()).stream()
-                .filter(r -> !ocupados.contains(r.getId()))
-                .map(r -> new RepartidorDisponibleDTO(r.getId(), r.getUsuario().getNombre()))
+        List<Repartidor> equipo = repartidores.findByNegocioIdAndUsuarioActivoTrue(negocio.getId());
+        if (equipo.isEmpty()) {
+            return List.of();
+        }
+        List<Long> ids = equipo.stream().map(Repartidor::getId).toList();
+        Set<Long> conRecorrido = new HashSet<>(recorridos.repartidorIdsConRecorrido(dia));
+        Map<Long, Recorrido> planeados = new HashMap<>();
+        for (Recorrido r : recorridos.activosPorRepartidores(dia, ids)) {
+            if (r.getEstado() == EstadoRecorrido.PLANEADO) {
+                planeados.put(r.getRepartidor().getId(), r);
+            }
+        }
+        Map<Long, Long> paradas = new HashMap<>();
+        if (!planeados.isEmpty()) {
+            for (Object[] fila : pedidos.conteoPorRecorrido(planeados.values().stream().map(Recorrido::getId).toList())) {
+                paradas.put((Long) fila[0], ((Number) fila[1]).longValue());
+            }
+        }
+        return equipo.stream()
+                .filter(r -> !conRecorrido.contains(r.getId()) || planeados.containsKey(r.getId()))
+                .map(r -> {
+                    Recorrido rec = planeados.get(r.getId());
+                    Long vehiculoId = rec == null || rec.getVehiculo() == null ? null : rec.getVehiculo().getId();
+                    int llevaParadas = rec == null ? 0 : paradas.getOrDefault(rec.getId(), 0L).intValue();
+                    return new RepartidorDisponibleDTO(r.getId(), r.getUsuario().getNombre(), vehiculoId, llevaParadas);
+                })
                 .sorted(Comparator.comparing(RepartidorDisponibleDTO::nombre))
+                .toList();
+    }
+
+    /** Repartidores del negocio con un recorrido activo hoy (PLANEADO o EN_CURSO) y su avance. */
+    @Transactional(readOnly = true)
+    public List<RepartidorHoyDTO> repartidoresConRutaHoy(Negocio negocio) {
+        List<Repartidor> equipo = repartidores.findByNegocioIdAndUsuarioActivoTrue(negocio.getId());
+        Map<Long, ResumenDia> resumen = resumenDeHoy(equipo.stream().map(Repartidor::getId).toList());
+        return equipo.stream()
+                .filter(r -> resumen.containsKey(r.getId()))
+                .sorted(Comparator.comparing((Repartidor r) -> r.getUsuario().getNombre()))
+                .map(r -> {
+                    ResumenDia d = resumen.get(r.getId());
+                    return new RepartidorHoyDTO(r.getId(), r.getUsuario().getNombre(), d.vehiculo(), d.entregados(), d.total());
+                })
                 .toList();
     }
 
@@ -161,7 +203,7 @@ public class EquipoService {
         for (Recorrido rec : deHoy) {
             long[] c = conteos.getOrDefault(rec.getId(), new long[]{0, 0});
             String vehiculo = rec.getVehiculo() == null ? null
-                    : etiqueta(rec.getVehiculo().getTipo()) + " " + rec.getVehiculo().getPlaca();
+                    : EtiquetasVehiculo.etiqueta(rec.getVehiculo().getTipo()) + " " + rec.getVehiculo().getPlaca();
             resumen.put(rec.getRepartidor().getId(),
                     new ResumenDia(vehiculo, c[1], c[0], rec.getEstado() == EstadoRecorrido.EN_CURSO));
         }
@@ -178,16 +220,6 @@ public class EquipoService {
         }
         return new EquipoDTO(r.getId(), usuario, resumen.vehiculo(), resumen.entregados(), resumen.total(),
                 resumen.enCurso() ? "EN_RUTA" : "LIBRE");
-    }
-
-    private String etiqueta(TipoVehiculo tipo) {
-        return switch (tipo) {
-            case COMBI -> "Combi";
-            case MOTOCICLETA -> "Motocicleta";
-            case CAMIONETA -> "Camioneta";
-            case BICICLETA -> "Bicicleta";
-            case AUTOMOVIL -> "Automóvil";
-        };
     }
 
     private String vacioANulo(String texto) {

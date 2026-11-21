@@ -5,6 +5,7 @@ import RoleRoute from './auth/RoleRoute';
 import AppLayout from './components/layout/AppLayout';
 import PaginaPendiente from './pages/PaginaPendiente';
 import EquipoPage from './pages/negocio/EquipoPage';
+import PanelPage from './pages/negocio/PanelPage';
 import PedidosPage from './pages/negocio/PedidosPage';
 import VehiculosPage from './pages/negocio/VehiculosPage';
 import PerfilPage from './pages/perfil/PerfilPage';
@@ -26,7 +27,7 @@ export default function App() {
         <Route element={<AppLayout />}>
           <Route path="/perfil" element={<PerfilPage />} />
           <Route element={<RoleRoute roles={['NEGOCIO']} />}>
-            <Route path="/negocio" element={<PaginaPendiente titulo="Panel del negocio" />} />
+            <Route path="/negocio" element={<PanelPage />} />
             <Route path="/negocio/pedidos" element={<PedidosPage />} />
             <Route path="/negocio/equipo" element={<EquipoPage />} />
             <Route path="/negocio/vehiculos" element={<VehiculosPage />} />
