@@ -17,7 +17,13 @@ case "${ID}" in ubuntu|debian) ;; *) echo "AVISO: este script se probó pensando
 echo; echo "== 1/7 Paquetes (Java 21, MySQL, Nginx, Certbot) =="
 export DEBIAN_FRONTEND=noninteractive
 apt-get update -y
-apt-get install -y openjdk-21-jre-headless mysql-server nginx certbot python3-certbot-nginx ufw openssl curl
+# Solo instala lo que falta: el VPS ya tiene Java, MySQL y Nginx de otras actividades.
+command -v java  >/dev/null 2>&1 || apt-get install -y openjdk-21-jre-headless
+command -v mysql >/dev/null 2>&1 || apt-get install -y mysql-server
+command -v nginx >/dev/null 2>&1 || apt-get install -y nginx
+# Certbot: si ya existe (por ejemplo instalado con snap) no se instala la version de apt, para no duplicarlo.
+command -v certbot >/dev/null 2>&1 || apt-get install -y certbot python3-certbot-nginx
+apt-get install -y openssl curl
 java -version 2>&1 | head -1
 mysql --version
 if mysql --version | grep -qi mariadb; then
@@ -26,14 +32,16 @@ fi
 systemctl enable --now mysql nginx
 
 echo; echo "== 2/7 Firewall =="
-PUERTO_SSH="$(ss -tlnp 2>/dev/null | awk '/sshd/ {n=split($4,a,":"); print a[n]; exit}')"
-PUERTO_SSH="${PUERTO_SSH:-22}"
-echo "SSH detectado en el puerto ${PUERTO_SSH}"
-ufw allow "${PUERTO_SSH}/tcp"
-ufw allow 'Nginx Full'
-ufw allow 25/tcp
-ufw --force enable
-ufw status | head -12
+# En este VPS corren otras actividades en los puertos 8081-8085, accesibles directo por puerto.
+# Si ufw esta apagado, no se enciende (encenderlo las bloquearia). Si esta encendido, solo se agregan reglas.
+if command -v ufw >/dev/null 2>&1 && ufw status | grep -q "Status: active"; then
+  ufw allow 'Nginx Full'
+  ufw allow 25/tcp
+  for p in 8081 8083 8084 8085; do ufw allow "${p}/tcp"; done
+  ufw status | head -20
+else
+  echo "ufw no está activo; se deja así para no bloquear las otras actividades del VPS."
+fi
 
 echo; echo "== 3/7 Base de datos =="
 ARCHIVO_CLAVE="/root/.rutaoax_db_pass"
@@ -130,7 +138,7 @@ After=network.target mysql.service
 [Service]
 User=rutaoax
 WorkingDirectory=${BASE}/backend
-ExecStart=/usr/bin/java -jar ${BASE}/backend/app.jar --spring.config.additional-location=file:${BASE}/config/
+ExecStart=/usr/bin/java -Duser.timezone=America/Mexico_City -jar ${BASE}/backend/app.jar --spring.config.additional-location=file:${BASE}/config/
 Restart=always
 RestartSec=5
 
