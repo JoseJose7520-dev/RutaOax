@@ -34,6 +34,8 @@ app.twilio.whatsapp-from=whatsapp:+CAMBIAR
 # Cuenta de prueba: WhatsApp solo acepta plantillas aprobadas (Content SID, empieza con HX)
 app.twilio.whatsapp-content-sid=
 app.twilio.whatsapp-prefijo=+521
+# Cuenta de prueba: el SMS solo acepta plantillas de Twilio (sms_delivery_updates, sms_order_confirmation...)
+app.twilio.sms-plantilla=
 
 # SMS Masivos (alternativa para SMS)
 app.sms.api-key=CAMBIAR
