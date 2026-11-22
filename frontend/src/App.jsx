@@ -9,6 +9,7 @@ import PanelPage from './pages/negocio/PanelPage';
 import PedidosPage from './pages/negocio/PedidosPage';
 import VehiculosPage from './pages/negocio/VehiculosPage';
 import PerfilPage from './pages/perfil/PerfilPage';
+import RutaHoyPage from './pages/repartidor/RutaHoyPage';
 import LoginPage from './pages/auth/LoginPage';
 import RecuperarPage from './pages/auth/RecuperarPage';
 import RegistroPage from './pages/auth/RegistroPage';
@@ -34,7 +35,7 @@ export default function App() {
             <Route path="/negocio/mensajes" element={<PaginaPendiente titulo="Mensajes" />} />
           </Route>
           <Route element={<RoleRoute roles={['REPARTIDOR']} tipoRepartidor="EMPRESA" />}>
-            <Route path="/repartidor" element={<PaginaPendiente titulo="Mi ruta de hoy" />} />
+            <Route path="/repartidor" element={<RutaHoyPage />} />
             <Route path="/repartidor/parada/:pedidoId" element={<PaginaPendiente titulo="Parada actual" />} />
             <Route path="/repartidor/historial" element={<PaginaPendiente titulo="Historial" />} />
           </Route>
