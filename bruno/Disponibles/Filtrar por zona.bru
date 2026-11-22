@@ -1,0 +1,20 @@
+meta {
+  name: Filtrar por zona
+  type: http
+  seq: 4
+}
+
+get {
+  url: {{baseUrl}}/disponibles?zona=Jalatlaco&page=0&size=50
+  body: none
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{tokenIndependiente}}
+}
+
+assert {
+  res.status: eq 200
+  res.body.content[0].zona: eq Jalatlaco
+}

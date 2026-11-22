@@ -1,0 +1,20 @@
+meta {
+  name: Filtrar por distancia
+  type: http
+  seq: 5
+}
+
+get {
+  url: {{baseUrl}}/disponibles?maxKm=0.01&page=0&size=10
+  body: none
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{tokenIndependiente}}
+}
+
+assert {
+  res.status: eq 200
+  res.body.totalElements: eq 0
+}

@@ -1,0 +1,21 @@
+meta {
+  name: Listar disponibles
+  type: http
+  seq: 3
+}
+
+get {
+  url: {{baseUrl}}/disponibles?page=0&size=50
+  body: none
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{tokenIndependiente}}
+}
+
+assert {
+  res.status: eq 200
+  res.body.totalElements: gte 1
+  res.body.content[0].distanciaKm: isNumber
+}
