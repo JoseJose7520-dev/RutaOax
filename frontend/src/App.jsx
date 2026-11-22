@@ -8,6 +8,7 @@ import EquipoPage from './pages/negocio/EquipoPage';
 import PanelPage from './pages/negocio/PanelPage';
 import PedidosPage from './pages/negocio/PedidosPage';
 import VehiculosPage from './pages/negocio/VehiculosPage';
+import MisPedidosPage from './pages/cliente/MisPedidosPage';
 import PerfilPage from './pages/perfil/PerfilPage';
 import HistorialPage from './pages/repartidor/HistorialPage';
 import ParadaPage from './pages/repartidor/ParadaPage';
@@ -47,7 +48,7 @@ export default function App() {
             <Route path="/independiente/mensajes" element={<PaginaPendiente titulo="Mensajes" />} />
           </Route>
           <Route element={<RoleRoute roles={['CLIENTE']} />}>
-            <Route path="/cliente" element={<PaginaPendiente titulo="Mi pedido" />} />
+            <Route path="/cliente" element={<MisPedidosPage />} />
             <Route path="/cliente/mensajes" element={<PaginaPendiente titulo="Mensajes" />} />
           </Route>
           <Route element={<RoleRoute roles={['ADMIN']} />}>
