@@ -9,6 +9,7 @@ import PanelPage from './pages/negocio/PanelPage';
 import PedidosPage from './pages/negocio/PedidosPage';
 import VehiculosPage from './pages/negocio/VehiculosPage';
 import PerfilPage from './pages/perfil/PerfilPage';
+import HistorialPage from './pages/repartidor/HistorialPage';
 import ParadaPage from './pages/repartidor/ParadaPage';
 import RutaHoyPage from './pages/repartidor/RutaHoyPage';
 import LoginPage from './pages/auth/LoginPage';
@@ -38,7 +39,7 @@ export default function App() {
           <Route element={<RoleRoute roles={['REPARTIDOR']} tipoRepartidor="EMPRESA" />}>
             <Route path="/repartidor" element={<RutaHoyPage />} />
             <Route path="/repartidor/parada/:pedidoId" element={<ParadaPage />} />
-            <Route path="/repartidor/historial" element={<PaginaPendiente titulo="Historial" />} />
+            <Route path="/repartidor/historial" element={<HistorialPage />} />
           </Route>
           <Route element={<RoleRoute roles={['REPARTIDOR']} tipoRepartidor="INDEPENDIENTE" />}>
             <Route path="/independiente" element={<PaginaPendiente titulo="Entregas disponibles" />} />
