@@ -1,0 +1,26 @@
+meta {
+  name: Negocio no puede probar 403
+  type: http
+  seq: 3
+}
+
+post {
+  url: {{baseUrl}}/admin/notificaciones/prueba
+  body: json
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{tokenNegocio}}
+}
+
+body:json {
+  {
+    "canal": "SMS",
+    "destino": "9515550109"
+  }
+}
+
+assert {
+  res.status: eq 403
+}

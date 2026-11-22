@@ -1,0 +1,28 @@
+meta {
+  name: Prueba con telefono invalido
+  type: http
+  seq: 1
+}
+
+post {
+  url: {{baseUrl}}/admin/notificaciones/prueba
+  body: json
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{tokenAdmin}}
+}
+
+body:json {
+  {
+    "canal": "WHATSAPP",
+    "destino": "123"
+  }
+}
+
+assert {
+  res.status: eq 200
+  res.body.estado: eq FALLIDO
+  res.body.detalle: isDefined
+}

@@ -1,0 +1,27 @@
+meta {
+  name: Canal invalido 422
+  type: http
+  seq: 2
+}
+
+post {
+  url: {{baseUrl}}/admin/notificaciones/prueba
+  body: json
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{tokenAdmin}}
+}
+
+body:json {
+  {
+    "canal": "PALOMA",
+    "destino": "9515550109"
+  }
+}
+
+assert {
+  res.status: eq 422
+  res.body.errores.canal: isDefined
+}
