@@ -9,3 +9,4 @@ export const asignarPedidos = (datos) => http.post('/pedidos/asignar', datos).th
 export const desasignarPedido = (id) => http.post(`/pedidos/${id}/desasignar`).then((r) => r.data);
 export const publicarPedido = (id) => http.post(`/pedidos/${id}/publicar`).then((r) => r.data);
 export const reasignarPedido = (id) => http.post(`/pedidos/${id}/reasignar`).then((r) => r.data);
+export const obtenerSeguimiento = (id) => http.get(`/pedidos/${id}/seguimiento`).then((r) => r.data);

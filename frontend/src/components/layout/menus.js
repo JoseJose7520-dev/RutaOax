@@ -32,7 +32,7 @@ export function menuPara(usuario) {
     ];
   }
   return [
-    { ruta: '/cliente', texto: 'Mi pedido' },
+    { ruta: '/cliente', texto: 'Mis pedidos' },
     { ruta: '/cliente/mensajes', texto: 'Mensajes' },
   ];
 }
