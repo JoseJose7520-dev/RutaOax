@@ -22,8 +22,30 @@ spring.mail.properties.mail.smtp.writetimeout=5000
 app.mail.from=no-reply@devs8.tech
 app.dev.log-reset-link=false
 
+# Proveedor de cada canal: sms = twilio | smsmasivos ; whatsapp = twilio | meta
+app.notificaciones.sms=twilio
+app.notificaciones.whatsapp=twilio
+
+# Twilio (SMS y WhatsApp)
 app.twilio.account-sid=CAMBIAR
 app.twilio.auth-token=CAMBIAR
 app.twilio.sms-from=CAMBIAR
-app.twilio.whatsapp-from=whatsapp:+14155238886
-app.notificaciones.pais-prefijo=+52
+app.twilio.whatsapp-from=whatsapp:+CAMBIAR
+# Cuenta de prueba: WhatsApp solo acepta plantillas aprobadas (Content SID, empieza con HX)
+app.twilio.whatsapp-content-sid=
+app.twilio.whatsapp-prefijo=+521
+# Cuenta de prueba: el SMS solo acepta plantillas de Twilio (sms_delivery_updates, sms_order_confirmation...)
+app.twilio.sms-plantilla=
+
+# SMS Masivos (alternativa para SMS)
+app.sms.api-key=CAMBIAR
+app.sms.lada-separada=false
+
+# WhatsApp Cloud API de Meta (alternativa para WhatsApp)
+app.whatsapp.phone-number-id=CAMBIAR
+app.whatsapp.token=CAMBIAR
+app.whatsapp.modo=plantilla
+app.whatsapp.plantilla=hello_world
+app.whatsapp.idioma=en_US
+app.whatsapp.parametros=0
+app.whatsapp.prefijo=52
