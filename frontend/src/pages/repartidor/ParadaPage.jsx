@@ -9,7 +9,8 @@ import Modal from '../../components/ui/Modal';
 import StatusBadge from '../../components/ui/StatusBadge';
 import { moneda } from '../../utils/format';
 
-export default function ParadaPage() {
+/** base: '/repartidor' para el repartidor de empresa, '/independiente/ruta' para el independiente. */
+export default function ParadaPage({ base = '/repartidor', paradaBase = '/repartidor/parada' }) {
   const { pedidoId } = useParams();
   const navigate = useNavigate();
   const [ruta, setRuta] = useState(null);
@@ -47,9 +48,9 @@ export default function ParadaPage() {
 
   const despuesDeMarcar = () => {
     if (siguiente) {
-      navigate(`/repartidor/parada/${siguiente.id}`);
+      navigate(`${paradaBase}/${siguiente.id}`);
     } else {
-      navigate('/repartidor');
+      navigate(base);
     }
   };
 
@@ -90,7 +91,7 @@ export default function ParadaPage() {
     return (
       <div className="movil">
         <ErrorRed mensaje={error} onReintentar={cargar} />
-        <Link className="btn sec" to="/repartidor" style={{ marginTop: 12 }}>Volver a mi ruta</Link>
+        <Link className="btn sec" to={base} style={{ marginTop: 12 }}>Volver a mi ruta</Link>
       </div>
     );
   }
@@ -98,7 +99,7 @@ export default function ParadaPage() {
     return (
       <div className="movil">
         <Vacio mensaje="Esta parada no está en tu ruta de hoy." />
-        <Link className="btn sec" to="/repartidor" style={{ marginTop: 12 }}>Volver a mi ruta</Link>
+        <Link className="btn sec" to={base} style={{ marginTop: 12 }}>Volver a mi ruta</Link>
       </div>
     );
   }
@@ -108,7 +109,7 @@ export default function ParadaPage() {
 
   return (
     <div className="movil" style={{ display: 'flex', flexDirection: 'column', gap: 16 }}>
-      <Link to="/repartidor" className="enlace">← Mi ruta</Link>
+      <Link to={base} className="enlace">← Mi ruta</Link>
 
       {errorAccion ? <Mensaje tipo="error">{errorAccion}</Mensaje> : null}
 
@@ -158,7 +159,7 @@ export default function ParadaPage() {
               <strong>{siguiente.clienteNombre}</strong>
               <small>{siguiente.direccion} · {siguiente.zona}</small>
             </div>
-            <Link className="btn sec sm" to={`/repartidor/parada/${siguiente.id}`}>Ver</Link>
+            <Link className="btn sec sm" to={`${paradaBase}/${siguiente.id}`}>Ver</Link>
           </div>
         </article>
       ) : null}

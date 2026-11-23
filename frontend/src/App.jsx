@@ -10,6 +10,7 @@ import PedidosPage from './pages/negocio/PedidosPage';
 import VehiculosPage from './pages/negocio/VehiculosPage';
 import MisPedidosPage from './pages/cliente/MisPedidosPage';
 import DisponiblesPage from './pages/independiente/DisponiblesPage';
+import RutaMapaPage from './pages/independiente/RutaMapaPage';
 import MensajesPage from './pages/mensajes/MensajesPage';
 import PerfilPage from './pages/perfil/PerfilPage';
 import HistorialPage from './pages/repartidor/HistorialPage';
@@ -46,7 +47,8 @@ export default function App() {
           </Route>
           <Route element={<RoleRoute roles={['REPARTIDOR']} tipoRepartidor="INDEPENDIENTE" />}>
             <Route path="/independiente" element={<DisponiblesPage />} />
-            <Route path="/independiente/ruta" element={<PaginaPendiente titulo="Mi ruta y mapa" />} />
+            <Route path="/independiente/ruta" element={<RutaMapaPage />} />
+            <Route path="/independiente/parada/:pedidoId" element={<ParadaPage base="/independiente/ruta" paradaBase="/independiente/parada" />} />
             <Route path="/independiente/mensajes" element={<MensajesPage morado />} />
           </Route>
           <Route element={<RoleRoute roles={['CLIENTE']} />}>
