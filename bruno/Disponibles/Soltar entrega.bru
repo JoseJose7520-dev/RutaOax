@@ -1,0 +1,19 @@
+meta {
+  name: Soltar entrega
+  type: http
+  seq: 12
+}
+
+post {
+  url: {{baseUrl}}/disponibles/{{dispPedidoId}}/soltar
+  body: none
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{tokenIndependiente}}
+}
+
+assert {
+  res.status: eq 200
+}

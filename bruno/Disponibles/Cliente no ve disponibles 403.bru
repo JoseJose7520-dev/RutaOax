@@ -1,0 +1,19 @@
+meta {
+  name: Cliente no ve disponibles 403
+  type: http
+  seq: 7
+}
+
+get {
+  url: {{baseUrl}}/disponibles
+  body: none
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{tokenCliente}}
+}
+
+assert {
+  res.status: eq 403
+}

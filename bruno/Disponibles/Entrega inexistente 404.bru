@@ -1,0 +1,19 @@
+meta {
+  name: Entrega inexistente 404
+  type: http
+  seq: 11
+}
+
+post {
+  url: {{baseUrl}}/disponibles/999999/tomar
+  body: none
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{tokenIndependiente}}
+}
+
+assert {
+  res.status: eq 404
+}
