@@ -1,0 +1,19 @@
+meta {
+  name: Repartidor de empresa no ve disponibles 403
+  type: http
+  seq: 6
+}
+
+get {
+  url: {{baseUrl}}/disponibles
+  body: none
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{tokenRepartidor}}
+}
+
+assert {
+  res.status: eq 403
+}

@@ -1,0 +1,19 @@
+meta {
+  name: Eliminar pedido de prueba
+  type: http
+  seq: 14
+}
+
+delete {
+  url: {{baseUrl}}/pedidos/{{dispPedidoId}}
+  body: none
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{tokenNegocio}}
+}
+
+assert {
+  res.status: eq 204
+}

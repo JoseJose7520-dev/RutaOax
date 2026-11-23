@@ -1,0 +1,26 @@
+meta {
+  name: Ya no aparece en disponibles
+  type: http
+  seq: 10
+}
+
+get {
+  url: {{baseUrl}}/disponibles?zona=Jalatlaco&page=0&size=50
+  body: none
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{tokenIndependiente}}
+}
+
+tests {
+  test("la entrega tomada ya no está en la lista", function() {
+    const ids = res.getBody().content.map((p) => p.id);
+    expect(ids).to.not.include(Number(bru.getVar("dispPedidoId")));
+  });
+}
+
+assert {
+  res.status: eq 200
+}

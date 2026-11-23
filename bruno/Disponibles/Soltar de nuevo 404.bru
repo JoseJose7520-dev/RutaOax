@@ -1,0 +1,19 @@
+meta {
+  name: Soltar de nuevo 404
+  type: http
+  seq: 13
+}
+
+post {
+  url: {{baseUrl}}/disponibles/{{dispPedidoId}}/soltar
+  body: none
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{tokenIndependiente}}
+}
+
+assert {
+  res.status: eq 404
+}
