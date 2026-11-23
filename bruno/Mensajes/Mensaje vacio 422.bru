@@ -1,0 +1,26 @@
+meta {
+  name: Mensaje vacio 422
+  type: http
+  seq: 3
+}
+
+post {
+  url: {{baseUrl}}/mensajes/pedidos/{{msgPedidoId}}
+  body: json
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{tokenCliente}}
+}
+
+body:json {
+  {
+    "texto": "   "
+  }
+}
+
+assert {
+  res.status: eq 422
+  res.body.errores.texto: isDefined
+}

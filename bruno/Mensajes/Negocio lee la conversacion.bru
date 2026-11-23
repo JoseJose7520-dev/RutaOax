@@ -1,0 +1,21 @@
+meta {
+  name: Negocio lee la conversacion
+  type: http
+  seq: 6
+}
+
+get {
+  url: {{baseUrl}}/mensajes/pedidos/{{msgPedidoId}}
+  body: none
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{tokenNegocio}}
+}
+
+assert {
+  res.status: eq 200
+  res.body.content[0].mio: eq false
+  res.body.content[0].remitente.nombre: isDefined
+}

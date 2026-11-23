@@ -1,0 +1,25 @@
+meta {
+  name: Repartidor de empresa no participa 404
+  type: http
+  seq: 11
+}
+
+post {
+  url: {{baseUrl}}/mensajes/pedidos/{{msgPedidoId}}
+  body: json
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{tokenRepartidor}}
+}
+
+body:json {
+  {
+    "texto": "hola"
+  }
+}
+
+assert {
+  res.status: eq 404
+}

@@ -1,0 +1,21 @@
+meta {
+  name: Cliente ve la respuesta
+  type: http
+  seq: 9
+}
+
+get {
+  url: {{baseUrl}}/mensajes/pedidos/{{msgPedidoId}}
+  body: none
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{tokenCliente}}
+}
+
+assert {
+  res.status: eq 200
+  res.body.content[1].mio: eq false
+  res.body.content[1].texto: contains repartidor
+}
