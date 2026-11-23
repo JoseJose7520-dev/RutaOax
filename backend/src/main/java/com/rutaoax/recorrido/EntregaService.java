@@ -8,6 +8,7 @@ import com.rutaoax.common.PageResponse;
 import com.rutaoax.negocio.NegocioContexto;
 import com.rutaoax.negocio.Repartidor;
 import com.rutaoax.negocio.RepartidorRepository;
+import com.rutaoax.notificacion.NotificacionService;
 import com.rutaoax.pedido.EstadoPedido;
 import com.rutaoax.pedido.Pedido;
 import com.rutaoax.pedido.PedidoRepository;
@@ -22,6 +23,8 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.transaction.support.TransactionSynchronization;
+import org.springframework.transaction.support.TransactionSynchronizationManager;
 
 /**
  * Lo que pasa después de asignar: el repartidor consulta su ruta, la inicia y marca cada entrega.
@@ -35,14 +38,17 @@ public class EntregaService {
     private final RepartidorRepository repartidores;
     private final RecorridoService recorridoService;
     private final NegocioContexto contexto;
+    private final NotificacionService notificaciones;
 
     public EntregaService(RecorridoRepository recorridos, PedidoRepository pedidos, RepartidorRepository repartidores,
-                          RecorridoService recorridoService, NegocioContexto contexto) {
+                          RecorridoService recorridoService, NegocioContexto contexto,
+                          NotificacionService notificaciones) {
         this.recorridos = recorridos;
         this.pedidos = pedidos;
         this.repartidores = repartidores;
         this.recorridoService = recorridoService;
         this.contexto = contexto;
+        this.notificaciones = notificaciones;
     }
 
     @Transactional(readOnly = true)
@@ -97,15 +103,21 @@ public class EntregaService {
         if (paradas.isEmpty()) {
             throw new ConflictException("El recorrido no tiene paradas");
         }
+        String repartidor = r.getRepartidor().getUsuario().getNombre();
         for (Pedido p : paradas) {
             if (p.getEstado() == EstadoPedido.ASIGNADO) {
                 p.setEstado(EstadoPedido.EN_CAMINO);
+                // HU-17: SMS a cada cliente cuando su pedido sale
+                Long pedidoId = p.getId();
+                String telefono = p.getClienteTelefono();
+                String negocio = NotificacionService.nombreNegocio(p);
+                Long clienteId = p.getCliente() != null ? p.getCliente().getId() : null;
+                despuesDeGuardar(() -> notificaciones.pedidoEnCamino(pedidoId, telefono, negocio, repartidor, clienteId));
             }
         }
         pedidos.saveAll(paradas);
         r.setEstado(EstadoRecorrido.EN_CURSO);
         recorridos.save(r);
-        // El aviso por SMS a cada cliente se agrega con el servicio de notificaciones (HU-17 / HU-25).
         return recorridoService.aDTO(r.getId());
     }
 
@@ -129,7 +141,7 @@ public class EntregaService {
                     + (p.getNotas() == null || p.getNotas().isBlank() ? "" : " | " + p.getNotas())));
         }
         pedidos.save(p);
-        // El WhatsApp de "entregado" se agrega con el servicio de notificaciones (HU-18 / HU-25).
+        avisarCliente(p, nuevo, motivo);
 
         boolean quedanEnCamino = pedidos.findByRecorridoIdOrderByOrdenParada(r.getId()).stream()
                 .anyMatch(x -> x.getEstado() == EstadoPedido.EN_CAMINO || x.getEstado() == EstadoPedido.ASIGNADO);
@@ -170,6 +182,35 @@ public class EntregaService {
             return r.getRepartidor().getUsuario().getId().equals(yo.getId());
         }
         return false;
+    }
+
+    /** HU-18: WhatsApp al cliente al cerrar su parada (y correo si tiene cuenta y se entregó). */
+    private void avisarCliente(Pedido p, EstadoPedido estado, String motivo) {
+        Long pedidoId = p.getId();
+        String telefono = p.getClienteTelefono();
+        String negocio = NotificacionService.nombreNegocio(p);
+        Long clienteId = p.getCliente() != null ? p.getCliente().getId() : null;
+        String email = p.getCliente() != null ? p.getCliente().getEmail() : null;
+        String nombre = p.getCliente() != null ? p.getCliente().getNombre() : p.getClienteNombre();
+        if (estado == EstadoPedido.ENTREGADO) {
+            despuesDeGuardar(() -> notificaciones.pedidoEntregado(pedidoId, telefono, negocio, clienteId, email, nombre));
+        } else {
+            despuesDeGuardar(() -> notificaciones.pedidoNoEntregado(pedidoId, telefono, negocio, motivo, clienteId));
+        }
+    }
+
+    /** Los avisos salen solo si el cambio se guardó; si la transacción falla, no se manda nada. */
+    private static void despuesDeGuardar(Runnable accion) {
+        if (TransactionSynchronizationManager.isSynchronizationActive()) {
+            TransactionSynchronizationManager.registerSynchronization(new TransactionSynchronization() {
+                @Override
+                public void afterCommit() {
+                    accion.run();
+                }
+            });
+        } else {
+            accion.run();
+        }
     }
 
     private static String recortar(String texto) {
