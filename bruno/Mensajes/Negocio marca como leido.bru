@@ -1,0 +1,19 @@
+meta {
+  name: Negocio marca como leido
+  type: http
+  seq: 7
+}
+
+patch {
+  url: {{baseUrl}}/mensajes/pedidos/{{msgPedidoId}}/leido
+  body: none
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{tokenNegocio}}
+}
+
+assert {
+  res.status: eq 204
+}

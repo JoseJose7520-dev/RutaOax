@@ -1,0 +1,21 @@
+meta {
+  name: Negocio ve el hilo
+  type: http
+  seq: 4
+}
+
+get {
+  url: {{baseUrl}}/mensajes/hilos?page=0&size=10
+  body: none
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{tokenNegocio}}
+}
+
+assert {
+  res.status: eq 200
+  res.body.content[0].pedidoId: eq {{msgPedidoId}}
+  res.body.content[0].noLeidos: gte 1
+}

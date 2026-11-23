@@ -1,0 +1,25 @@
+meta {
+  name: Negocio responde
+  type: http
+  seq: 8
+}
+
+post {
+  url: {{baseUrl}}/mensajes/pedidos/{{msgPedidoId}}
+  body: json
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{tokenNegocio}}
+}
+
+body:json {
+  {
+    "texto": "Claro, se lo avisamos al repartidor."
+  }
+}
+
+assert {
+  res.status: eq 201
+}

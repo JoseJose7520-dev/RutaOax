@@ -1,0 +1,35 @@
+meta {
+  name: Crear pedido para conversar
+  type: http
+  seq: 1
+}
+
+post {
+  url: {{baseUrl}}/pedidos
+  body: json
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{tokenNegocio}}
+}
+
+body:json {
+  {
+    "clienteNombre": "Carla Ríos",
+    "clienteTelefono": "9515550109",
+    "clienteEmail": "cliente1@rutaoax.com",
+    "direccion": "Calle Hidalgo 22",
+    "zona": "Centro Histórico",
+    "articulos": 1,
+    "total": 150
+  }
+}
+
+vars:post-response {
+  msgPedidoId: res.body.id
+}
+
+assert {
+  res.status: eq 201
+}
