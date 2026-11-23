@@ -9,6 +9,8 @@ import PanelPage from './pages/negocio/PanelPage';
 import PedidosPage from './pages/negocio/PedidosPage';
 import VehiculosPage from './pages/negocio/VehiculosPage';
 import MisPedidosPage from './pages/cliente/MisPedidosPage';
+import DisponiblesPage from './pages/independiente/DisponiblesPage';
+import MensajesPage from './pages/mensajes/MensajesPage';
 import PerfilPage from './pages/perfil/PerfilPage';
 import HistorialPage from './pages/repartidor/HistorialPage';
 import ParadaPage from './pages/repartidor/ParadaPage';
@@ -35,7 +37,7 @@ export default function App() {
             <Route path="/negocio/pedidos" element={<PedidosPage />} />
             <Route path="/negocio/equipo" element={<EquipoPage />} />
             <Route path="/negocio/vehiculos" element={<VehiculosPage />} />
-            <Route path="/negocio/mensajes" element={<PaginaPendiente titulo="Mensajes" />} />
+            <Route path="/negocio/mensajes" element={<MensajesPage />} />
           </Route>
           <Route element={<RoleRoute roles={['REPARTIDOR']} tipoRepartidor="EMPRESA" />}>
             <Route path="/repartidor" element={<RutaHoyPage />} />
@@ -43,13 +45,13 @@ export default function App() {
             <Route path="/repartidor/historial" element={<HistorialPage />} />
           </Route>
           <Route element={<RoleRoute roles={['REPARTIDOR']} tipoRepartidor="INDEPENDIENTE" />}>
-            <Route path="/independiente" element={<PaginaPendiente titulo="Entregas disponibles" />} />
+            <Route path="/independiente" element={<DisponiblesPage />} />
             <Route path="/independiente/ruta" element={<PaginaPendiente titulo="Mi ruta y mapa" />} />
-            <Route path="/independiente/mensajes" element={<PaginaPendiente titulo="Mensajes" />} />
+            <Route path="/independiente/mensajes" element={<MensajesPage morado />} />
           </Route>
           <Route element={<RoleRoute roles={['CLIENTE']} />}>
             <Route path="/cliente" element={<MisPedidosPage />} />
-            <Route path="/cliente/mensajes" element={<PaginaPendiente titulo="Mensajes" />} />
+            <Route path="/cliente/mensajes" element={<MensajesPage />} />
           </Route>
           <Route element={<RoleRoute roles={['ADMIN']} />}>
             <Route path="/admin/usuarios" element={<PaginaPendiente titulo="Usuarios" />} />
