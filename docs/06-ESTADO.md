@@ -67,7 +67,10 @@ Estados: Pendiente · En curso (o por verificar) · Hecha · Bloqueada
 | 13 | Asignar pedidos | Hecha | Verificado; mejorado en la Parte 3 |
 | 14 | Panel del negocio | Hecha | Probado en producción |
 | 15 | Publicar y reasignar | Hecha | Probado en producción |
-| 16 a 34 | Días 3 y 4 | Pendiente | ver `03-HISTORIAS.md` |
+| 16 a 21, 23 a 26 | Día 3 (repartidor, cliente, independiente, mensajes y avisos) | Hecha | Probado en producción el 23/11 |
+| 22 | Cliente: crear un envío abierto | Pendiente | P3, se hace solo si sobra tiempo |
+| 27 | Administrador: usuarios | Hecha | Carpeta Admin de Bruno. Una cuenta con pedidos o recorridos no se borra, se desactiva |
+| 28 a 34 | Resto del Día 4 | Pendiente | ver `03-HISTORIAS.md` |
 
 ## Archivos que ya existen
 **Backend** (`backend/`): `pom.xml`, `.gitignore`, `src/main/resources/db/migration/V1__esquema.sql`, `application.properties.example`.
@@ -157,7 +160,6 @@ Formato: fecha · decisión · motivo · documento corregido.
 | 1 | El código del Día 2 Parte 3 (panel, publicar, reasignar y mejora de asignación) no se compiló ni ejecutó en el entorno donde se escribió | `backend/` y `frontend/` | Seguir `docs/dia-2/EJECUTAR-DIA-2-PARTE-3.md` |
 | 4 | HU-09: el primer despliegue con HTTPS aún no se ha ejecutado | `deploy/` | Seguir `docs/dia-1/EJECUTAR-PARTE-4.md` (Parte B) |
 | 3 | Correo real: Postfix, SPF y DKIM aún no están configurados; los envíos quedan FALLIDO | HU-26 (Día 3) | `SELECT estado FROM notificaciones_log;` |
-| 2 | Borrar un negocio con pedidos fallará por la llave foránea; falta responder 409 legible | Día 4 (admin) | `DELETE /admin/usuarios/{id}` de un negocio con pedidos |
 
 ## Cómo probar lo que hay hoy
 Backend: seguir `docs/dia-1/EJECUTAR-PARTE-1.md` (base local `rutaoax`, copiar `application.properties.example` a `application.properties`, `mvn spring-boot:run`).

@@ -1,0 +1,29 @@
+meta {
+  name: Editar usuario
+  type: http
+  seq: 10
+}
+
+put {
+  url: {{baseUrl}}/admin/usuarios/{{usuarioNuevoId}}
+  body: json
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{tokenAdmin}}
+}
+
+body:json {
+  {
+    "nombre": "Cliente Editado",
+    "email": "{{emailNuevo}}",
+    "telefono": "9515550198",
+    "nuevaPassword": null
+  }
+}
+
+assert {
+  res.status: eq 200
+  res.body.nombre: eq Cliente Editado
+}

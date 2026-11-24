@@ -1,0 +1,20 @@
+meta {
+  name: Filtrar por rol y estado
+  type: http
+  seq: 4
+}
+
+get {
+  url: {{baseUrl}}/admin/usuarios?rol=NEGOCIO&activo=true
+  body: none
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{tokenAdmin}}
+}
+
+assert {
+  res.status: eq 200
+  res.body.content[0].roles[0]: eq NEGOCIO
+}

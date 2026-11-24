@@ -1,0 +1,32 @@
+meta {
+  name: Crear datos invalidos 422
+  type: http
+  seq: 8
+}
+
+post {
+  url: {{baseUrl}}/admin/usuarios
+  body: json
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{tokenAdmin}}
+}
+
+body:json {
+  {
+    "nombre": "",
+    "email": "correo-mal",
+    "password": "corta",
+    "telefono": "123",
+    "tipo": "JEFE"
+  }
+}
+
+assert {
+  res.status: eq 422
+  res.body.errores.email: isDefined
+  res.body.errores.password: isDefined
+  res.body.errores.tipo: isDefined
+}

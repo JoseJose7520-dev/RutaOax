@@ -1,0 +1,40 @@
+meta {
+  name: Crear cliente
+  type: http
+  seq: 6
+}
+
+post {
+  url: {{baseUrl}}/admin/usuarios
+  body: json
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{tokenAdmin}}
+}
+
+body:json {
+  {
+    "nombre": "Cliente Admin",
+    "email": "{{emailNuevo}}",
+    "password": "Admin#Prueba1",
+    "telefono": "9515550199",
+    "tipo": "CLIENTE"
+  }
+}
+
+vars:post-response {
+  usuarioNuevoId: res.body.id
+}
+
+script:pre-request {
+  bru.setVar("emailNuevo", "admin" + Date.now() + "@rutaoax.com");
+}
+
+assert {
+  res.status: eq 201
+  res.body.roles[0]: eq CLIENTE
+  res.body.activo: eq true
+  res.body.passwordHash: isUndefined
+}

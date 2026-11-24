@@ -1,0 +1,28 @@
+meta {
+  name: Crear correo repetido 409
+  type: http
+  seq: 7
+}
+
+post {
+  url: {{baseUrl}}/admin/usuarios
+  body: json
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{tokenAdmin}}
+}
+
+body:json {
+  {
+    "nombre": "Repetido",
+    "email": "negocio1@rutaoax.com",
+    "password": "Admin#Prueba1",
+    "tipo": "CLIENTE"
+  }
+}
+
+assert {
+  res.status: eq 409
+}

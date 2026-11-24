@@ -1,0 +1,25 @@
+meta {
+  name: Listar usuarios
+  type: http
+  seq: 3
+}
+
+get {
+  url: {{baseUrl}}/admin/usuarios?page=0&size=10
+  body: none
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{tokenAdmin}}
+}
+
+assert {
+  res.status: eq 200
+  res.body.content: isArray
+  res.body.totalElements: gt 0
+}
+
+docs {
+  Ninguna fila trae passwordHash: solo id, nombre, email, telefono, activo, roles, perfil y creadoEn.
+}
