@@ -3,8 +3,10 @@ import ProtectedRoute from './auth/ProtectedRoute';
 import RedirectInicio from './auth/RedirectInicio';
 import RoleRoute from './auth/RoleRoute';
 import AppLayout from './components/layout/AppLayout';
-import PaginaPendiente from './pages/PaginaPendiente';
+import NotificacionesPage from './pages/admin/NotificacionesPage';
+import PedidosAdminPage from './pages/admin/PedidosAdminPage';
 import UsuariosPage from './pages/admin/UsuariosPage';
+import VehiculosAdminPage from './pages/admin/VehiculosAdminPage';
 import EquipoPage from './pages/negocio/EquipoPage';
 import PanelPage from './pages/negocio/PanelPage';
 import PedidosPage from './pages/negocio/PedidosPage';
@@ -58,9 +60,9 @@ export default function App() {
           </Route>
           <Route element={<RoleRoute roles={['ADMIN']} />}>
             <Route path="/admin/usuarios" element={<UsuariosPage />} />
-            <Route path="/admin/pedidos" element={<PaginaPendiente titulo="Pedidos" />} />
-            <Route path="/admin/vehiculos" element={<PaginaPendiente titulo="Vehículos" />} />
-            <Route path="/admin/notificaciones" element={<PaginaPendiente titulo="Notificaciones" />} />
+            <Route path="/admin/pedidos" element={<PedidosAdminPage />} />
+            <Route path="/admin/vehiculos" element={<VehiculosAdminPage />} />
+            <Route path="/admin/notificaciones" element={<NotificacionesPage />} />
           </Route>
         </Route>
       </Route>
