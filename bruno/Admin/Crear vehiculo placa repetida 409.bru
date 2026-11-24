@@ -1,0 +1,28 @@
+meta {
+  name: Crear vehiculo placa repetida 409
+  type: http
+  seq: 32
+}
+
+post {
+  url: {{baseUrl}}/admin/vehiculos?negocioId={{negocioAdminId}}
+  body: json
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{tokenAdmin}}
+}
+
+body:json {
+  {
+    "tipo": "BICICLETA",
+    "placa": "{{placaAdmin}}",
+    "capacidad": 5,
+    "estado": "ACTIVO"
+  }
+}
+
+assert {
+  res.status: eq 409
+}

@@ -70,7 +70,10 @@ Estados: Pendiente · En curso (o por verificar) · Hecha · Bloqueada
 | 16 a 21, 23 a 26 | Día 3 (repartidor, cliente, independiente, mensajes y avisos) | Hecha | Probado en producción el 23/11 |
 | 22 | Cliente: crear un envío abierto | Pendiente | P3, se hace solo si sobra tiempo |
 | 27 | Administrador: usuarios | Hecha | Carpeta Admin de Bruno. Una cuenta con pedidos o recorridos no se borra, se desactiva |
-| 28 a 34 | Resto del Día 4 | Pendiente | ver `03-HISTORIAS.md` |
+| 28 | Administrador: pedidos, vehículos y notificaciones | Hecha | El admin crea a nombre de cualquier negocio; editar y borrar reutilizan los endpoints del negocio |
+| 30 | Validaciones y estados de interfaz | Hecha | Sin `alert()` ni `confirm()`; botón para mostrar la contraseña en todos los campos de contraseña |
+| 31 | Colección de Bruno completa | Hecha | Hay casos 400, 401, 403, 404, 409 y 422 |
+| 29, 32 a 34 | Resto del Día 4 | Pendiente | ver `03-HISTORIAS.md` |
 
 ## Archivos que ya existen
 **Backend** (`backend/`): `pom.xml`, `.gitignore`, `src/main/resources/db/migration/V1__esquema.sql`, `application.properties.example`.

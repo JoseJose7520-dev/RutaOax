@@ -1,0 +1,31 @@
+meta {
+  name: Crear pedido datos invalidos 422
+  type: http
+  seq: 26
+}
+
+post {
+  url: {{baseUrl}}/admin/pedidos?negocioId={{negocioAdminId}}
+  body: json
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{tokenAdmin}}
+}
+
+body:json {
+  {
+    "clienteNombre": "",
+    "direccion": "",
+    "zona": "Marte",
+    "articulos": 0,
+    "total": -5
+  }
+}
+
+assert {
+  res.status: eq 422
+  res.body.errores.clienteNombre: isDefined
+  res.body.errores.articulos: isDefined
+}

@@ -1,0 +1,24 @@
+meta {
+  name: Pedidos de todos
+  type: http
+  seq: 22
+}
+
+get {
+  url: {{baseUrl}}/admin/pedidos?page=0&size=10
+  body: none
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{tokenAdmin}}
+}
+
+assert {
+  res.status: eq 200
+  res.body.totalElements: gt 0
+}
+
+docs {
+  El administrador ve los pedidos de todos los negocios, sin filtro de pertenencia.
+}
