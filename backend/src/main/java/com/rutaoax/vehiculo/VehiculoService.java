@@ -44,12 +44,7 @@ public class VehiculoService {
     @Transactional(readOnly = true)
     public PageResponse<VehiculoDTO> listar(UsuarioPrincipal yo, String q, TipoVehiculo tipo, EstadoVehiculo estado,
                                             int page, int size) {
-        Long negocioId = contexto.ambito(yo);
-        Pageable pageable = PageRequest.of(Math.max(page, 0), Math.min(Math.max(size, 1), 50),
-                Sort.by("placa").ascending());
-        Page<Vehiculo> pagina = vehiculos.buscar(negocioId, q == null ? "" : q.trim(), tipo, estado, pageable);
-        Map<Long, String> uso = usoDeHoy(pagina.getContent().stream().map(Vehiculo::getId).toList());
-        return PageResponse.from(pagina.map(v -> VehiculoDTO.from(v, uso.get(v.getId()), uso.containsKey(v.getId()))));
+        return listarAdmin(contexto.ambito(yo), q, tipo, estado, page, size);
     }
 
     @Transactional(readOnly = true)
@@ -57,9 +52,25 @@ public class VehiculoService {
         return aDTO(buscarPropio(yo, id));
     }
 
+    /** Listado del administrador: todos los vehiculos, con filtro opcional por negocio. */
+    @Transactional(readOnly = true)
+    public PageResponse<VehiculoDTO> listarAdmin(Long negocioId, String q, TipoVehiculo tipo, EstadoVehiculo estado,
+                                                 int page, int size) {
+        Pageable pageable = PageRequest.of(Math.max(page, 0), Math.min(Math.max(size, 1), 50),
+                Sort.by("placa").ascending());
+        Page<Vehiculo> pagina = vehiculos.buscar(negocioId, q == null ? "" : q.trim(), tipo, estado, pageable);
+        Map<Long, String> uso = usoDeHoy(pagina.getContent().stream().map(Vehiculo::getId).toList());
+        return PageResponse.from(pagina.map(v -> VehiculoDTO.from(v, uso.get(v.getId()), uso.containsKey(v.getId()))));
+    }
+
     @Transactional
     public VehiculoDTO crear(UsuarioPrincipal yo, VehiculoRequest req) {
-        Negocio negocio = contexto.negocioDe(yo);
+        return crearPara(contexto.negocioDe(yo), req);
+    }
+
+    /** Registra el vehiculo a nombre de un negocio; lo usan el negocio y el administrador. */
+    @Transactional
+    public VehiculoDTO crearPara(Negocio negocio, VehiculoRequest req) {
         String placa = normalizar(req.placa());
         if (vehiculos.existsByPlaca(placa)) {
             throw new ConflictException("Ya existe un vehículo con esa placa");
