@@ -4,6 +4,7 @@ import RedirectInicio from './auth/RedirectInicio';
 import RoleRoute from './auth/RoleRoute';
 import AppLayout from './components/layout/AppLayout';
 import PaginaPendiente from './pages/PaginaPendiente';
+import UsuariosPage from './pages/admin/UsuariosPage';
 import EquipoPage from './pages/negocio/EquipoPage';
 import PanelPage from './pages/negocio/PanelPage';
 import PedidosPage from './pages/negocio/PedidosPage';
@@ -56,7 +57,7 @@ export default function App() {
             <Route path="/cliente/mensajes" element={<MensajesPage />} />
           </Route>
           <Route element={<RoleRoute roles={['ADMIN']} />}>
-            <Route path="/admin/usuarios" element={<PaginaPendiente titulo="Usuarios" />} />
+            <Route path="/admin/usuarios" element={<UsuariosPage />} />
             <Route path="/admin/pedidos" element={<PaginaPendiente titulo="Pedidos" />} />
             <Route path="/admin/vehiculos" element={<PaginaPendiente titulo="Vehículos" />} />
             <Route path="/admin/notificaciones" element={<PaginaPendiente titulo="Notificaciones" />} />
