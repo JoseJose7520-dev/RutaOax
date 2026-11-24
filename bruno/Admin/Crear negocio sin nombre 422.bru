@@ -1,0 +1,28 @@
+meta {
+  name: Crear negocio sin nombre 422
+  type: http
+  seq: 9
+}
+
+post {
+  url: {{baseUrl}}/admin/usuarios
+  body: json
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{tokenAdmin}}
+}
+
+body:json {
+  {
+    "nombre": "Dueño Nuevo",
+    "email": "sinnegocio@rutaoax.com",
+    "password": "Admin#Prueba1",
+    "tipo": "NEGOCIO"
+  }
+}
+
+assert {
+  res.status: eq 422
+}

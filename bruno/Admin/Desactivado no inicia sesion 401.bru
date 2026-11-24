@@ -1,0 +1,22 @@
+meta {
+  name: Desactivado no inicia sesion 401
+  type: http
+  seq: 12
+}
+
+post {
+  url: {{baseUrl}}/auth/login
+  body: json
+  auth: none
+}
+
+body:json {
+  {
+    "email": "{{emailNuevo}}",
+    "password": "Admin#Prueba1"
+  }
+}
+
+assert {
+  res.status: eq 401
+}

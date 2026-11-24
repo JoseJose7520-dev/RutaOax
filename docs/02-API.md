@@ -39,11 +39,12 @@ Base: `/api`. JSON en UTF-8. Todas las rutas requieren `Authorization: Bearer <t
 - PUT `/perfil/password` `{ actual*, nueva* }` → 204 (409 si la actual es incorrecta)
 
 ## Administración (`/api/admin`) — solo ADMIN
-- GET `/admin/usuarios?q=&rol=&activo=&page=&size=` → página de `UsuarioDTO`
-- POST `/admin/usuarios` `{ nombre*, email*, password*, telefono, rol*, nombreNegocio, negocioId }` → 201
-- PUT `/admin/usuarios/{id}` `{ nombre*, telefono, rol }` → `UsuarioDTO`
-- PATCH `/admin/usuarios/{id}/activo` `{ activo }` → `UsuarioDTO`
-- DELETE `/admin/usuarios/{id}` → 204 (409 si es el único ADMIN)
+- GET `/admin/usuarios?q=&rol=&activo=&page=&size=` → página de `{ id, nombre, email, telefono, activo, roles, perfil, creadoEn }` (q busca en nombre y correo; rol = ADMIN, NEGOCIO, REPARTIDOR o CLIENTE)
+- GET `/admin/usuarios/{id}` → un usuario (404 si no existe)
+- POST `/admin/usuarios` `{ nombre*, email*, password*, telefono, tipo*, nombreNegocio }` → 201. `tipo` = CLIENTE, NEGOCIO (pide `nombreNegocio`), INDEPENDIENTE o ADMIN. 409 si el correo ya existe
+- PUT `/admin/usuarios/{id}` `{ nombre*, email*, telefono, nuevaPassword }` → usuario (la contraseña solo cambia si se manda)
+- PATCH `/admin/usuarios/{id}/activo` `{ activo* }` → usuario. 409 si es tu propia cuenta o el único ADMIN activo
+- DELETE `/admin/usuarios/{id}` → 204. 409 si es tu propia cuenta, el único ADMIN, o si la cuenta tiene pedidos o recorridos (en ese caso se desactiva)
 - GET `/admin/notificaciones?canal=&estado=&page=&size=` → página de `{ id, canal, destino, evento, estado, detalle, creadoEn }`
 - POST `/admin/notificaciones/prueba` `{ canal*, destino* }` → 200 `{ estado, detalle }` (envía un mensaje de prueba real; sirve para verificar configuración)
 

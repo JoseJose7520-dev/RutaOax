@@ -1,0 +1,25 @@
+meta {
+  name: Desactivar al unico admin 409
+  type: http
+  seq: 18
+}
+
+patch {
+  url: {{baseUrl}}/admin/usuarios/{{adminId}}/activo
+  body: json
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{tokenAdmin}}
+}
+
+body:json {
+  {
+    "activo": false
+  }
+}
+
+assert {
+  res.status: eq 409
+}

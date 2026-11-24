@@ -1,0 +1,24 @@
+meta {
+  name: Buscar negocio1
+  type: http
+  seq: 5
+}
+
+get {
+  url: {{baseUrl}}/admin/usuarios?q=negocio1
+  body: none
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{tokenAdmin}}
+}
+
+vars:post-response {
+  negocio1Id: res.body.content[0].id
+}
+
+assert {
+  res.status: eq 200
+  res.body.totalElements: eq 1
+}

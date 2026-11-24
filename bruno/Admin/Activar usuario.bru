@@ -1,0 +1,26 @@
+meta {
+  name: Activar usuario
+  type: http
+  seq: 13
+}
+
+patch {
+  url: {{baseUrl}}/admin/usuarios/{{usuarioNuevoId}}/activo
+  body: json
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{tokenAdmin}}
+}
+
+body:json {
+  {
+    "activo": true
+  }
+}
+
+assert {
+  res.status: eq 200
+  res.body.activo: eq true
+}

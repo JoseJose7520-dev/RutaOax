@@ -1,0 +1,26 @@
+meta {
+  name: Desactivar usuario
+  type: http
+  seq: 11
+}
+
+patch {
+  url: {{baseUrl}}/admin/usuarios/{{usuarioNuevoId}}/activo
+  body: json
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{tokenAdmin}}
+}
+
+body:json {
+  {
+    "activo": false
+  }
+}
+
+assert {
+  res.status: eq 200
+  res.body.activo: eq false
+}

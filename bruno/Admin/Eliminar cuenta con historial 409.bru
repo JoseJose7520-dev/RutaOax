@@ -1,0 +1,23 @@
+meta {
+  name: Eliminar cuenta con historial 409
+  type: http
+  seq: 16
+}
+
+delete {
+  url: {{baseUrl}}/admin/usuarios/{{negocio1Id}}
+  body: none
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{tokenAdmin}}
+}
+
+assert {
+  res.status: eq 409
+}
+
+docs {
+  negocio1 tiene pedidos: no se borra, se debe desactivar.
+}
