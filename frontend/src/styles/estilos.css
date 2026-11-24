@@ -165,3 +165,9 @@ input[type=checkbox],input[type=radio]{width:auto}
 .cupo{display:flex;justify-content:space-between;gap:8px}
 .cupo strong{color:var(--tinta)}
 .chips{display:flex;gap:8px;flex-wrap:wrap}
+/* Campo de contraseña con boton para mostrarla */
+.con-ojo{position:relative}
+.con-ojo input{width:100%;padding-right:46px}
+.con-ojo .ojo{position:absolute;top:50%;right:6px;transform:translateY(-50%);width:36px;height:36px;border:0;background:transparent;color:var(--gris);border-radius:8px;display:grid;place-items:center;cursor:pointer}
+.con-ojo .ojo:hover{color:var(--tinta);background:rgba(0,0,0,.05)}
+.con-ojo .ojo:focus-visible{outline:2px solid var(--azul);outline-offset:1px}
