@@ -1,0 +1,25 @@
+meta {
+  name: Negocios para filtros
+  type: http
+  seq: 21
+}
+
+get {
+  url: {{baseUrl}}/admin/negocios
+  body: none
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{tokenAdmin}}
+}
+
+vars:post-response {
+  negocioAdminId: res.body[0].id
+}
+
+assert {
+  res.status: eq 200
+  res.body: isArray
+  res.body[0].nombre: isString
+}

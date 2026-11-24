@@ -78,9 +78,26 @@ public class PedidoService {
         return PedidoDTO.from(p);
     }
 
+    /** Listado del administrador: todos los pedidos, con filtro opcional por negocio. */
+    @Transactional(readOnly = true)
+    public PageResponse<PedidoDTO> listarAdmin(Long negocioId, String q, EstadoPedido estado, String zona,
+                                               Modalidad modalidad, int page, int size) {
+        String busqueda = q == null ? "" : q.trim().replaceFirst("^#", "");
+        String zonaFiltro = zona == null || zona.isBlank() ? null : zona;
+        Pageable pageable = PageRequest.of(Math.max(page, 0), Math.min(Math.max(size, 1), 50),
+                Sort.by("id").descending());
+        return PageResponse.from(pedidos.buscar(negocioId, null, null, busqueda, estado, zonaFiltro, modalidad, "",
+                pageable).map(PedidoDTO::from));
+    }
+
     @Transactional
     public PedidoDTO crear(UsuarioPrincipal yo, PedidoRequest req) {
-        Negocio negocio = contexto.negocioDe(yo);
+        return crearPara(contexto.negocioDe(yo), req);
+    }
+
+    /** Crea el pedido a nombre de un negocio; lo usan el negocio y el administrador. */
+    @Transactional
+    public PedidoDTO crearPara(Negocio negocio, PedidoRequest req) {
         Pedido p = new Pedido();
         p.setNegocio(negocio);
         p.setModalidad(req.modalidad() == null ? Modalidad.NEGOCIO : req.modalidad());

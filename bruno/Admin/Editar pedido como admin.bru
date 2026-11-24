@@ -1,0 +1,31 @@
+meta {
+  name: Editar pedido como admin
+  type: http
+  seq: 28
+}
+
+put {
+  url: {{baseUrl}}/pedidos/{{pedidoAdminId}}
+  body: json
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{tokenAdmin}}
+}
+
+body:json {
+  {
+    "clienteNombre": "Pedido del admin editado",
+    "clienteTelefono": "9511147148",
+    "direccion": "Calle Macedonio Alcalá 102",
+    "zona": "Centro Histórico",
+    "articulos": 3,
+    "total": 200
+  }
+}
+
+assert {
+  res.status: eq 200
+  res.body.articulos: eq 3
+}

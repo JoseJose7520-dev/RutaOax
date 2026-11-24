@@ -4,6 +4,7 @@ import { actualizarPedido, crearPedido } from '../../api/pedidosApi';
 import Field from '../../components/ui/Field';
 import { Mensaje } from '../../components/ui/Feedback';
 import Modal from '../../components/ui/Modal';
+import { crearPedidoAdmin } from '../../api/adminApi';
 import { validarEmail, validarRequerido, validarTelefono } from '../../utils/validaciones';
 
 function validar(campo, valor, datos) {
@@ -35,15 +36,19 @@ function validar(campo, valor, datos) {
       if (Number.isNaN(n) || n < 0) return 'El pago no puede ser negativo';
       return /^\d+(\.\d{1,2})?$/.test(String(valor)) ? '' : 'El pago debe tener máximo 2 decimales';
     }
+    case 'negocioId':
+      return datos.eligeNegocio && !valor ? 'Elige el negocio' : '';
     default:
       return '';
   }
 }
 
-const CAMPOS = ['clienteNombre', 'clienteTelefono', 'clienteEmail', 'direccion', 'zona', 'articulos', 'total', 'pagoRepartidor'];
+const CAMPOS = ['negocioId', 'clienteNombre', 'clienteTelefono', 'clienteEmail', 'direccion', 'zona', 'articulos', 'total', 'pagoRepartidor'];
 
-export default function PedidoFormModal({ pedido, zonas, onCerrar, onGuardado }) {
+// negocios: solo lo manda el administrador; al crear, elige a que negocio pertenece el pedido
+export default function PedidoFormModal({ pedido, zonas, negocios, onCerrar, onGuardado }) {
   const editando = Boolean(pedido);
+  const eligeNegocio = Boolean(negocios) && !editando;
   const [datos, setDatos] = useState({
     clienteNombre: pedido?.clienteNombre ?? '',
     clienteTelefono: pedido?.clienteTelefono ?? '',
@@ -56,31 +61,33 @@ export default function PedidoFormModal({ pedido, zonas, onCerrar, onGuardado })
     publicar: pedido?.modalidad === 'ABIERTO',
     origen: pedido?.origen ?? '',
     pagoRepartidor: pedido?.pagoRepartidor != null ? String(pedido.pagoRepartidor) : '',
+    negocioId: '',
   });
   const [tocados, setTocados] = useState({});
   const [errores, setErrores] = useState({});
   const [errorGeneral, setErrorGeneral] = useState('');
   const [guardando, setGuardando] = useState(false);
+  const contexto = { eligeNegocio };
 
   const cambiar = (e) => {
     const { name, value, type, checked } = e.target;
     const nuevoValor = type === 'checkbox' ? checked : value;
     const siguiente = { ...datos, [name]: nuevoValor };
     setDatos(siguiente);
-    if (tocados[name]) setErrores((er) => ({ ...er, [name]: validar(name, nuevoValor, siguiente) }));
+    if (tocados[name]) setErrores((er) => ({ ...er, [name]: validar(name, nuevoValor, { ...siguiente, ...contexto }) }));
   };
 
   const salir = (e) => {
     const { name, value } = e.target;
     setTocados((t) => ({ ...t, [name]: true }));
-    setErrores((er) => ({ ...er, [name]: validar(name, value, datos) }));
+    setErrores((er) => ({ ...er, [name]: validar(name, value, { ...datos, ...contexto }) }));
   };
 
   const enviar = async (e) => {
     e.preventDefault();
     const nuevos = {};
     CAMPOS.forEach((c) => {
-      nuevos[c] = validar(c, datos[c], datos);
+      nuevos[c] = validar(c, datos[c], { ...datos, ...contexto });
     });
     setTocados(Object.fromEntries(CAMPOS.map((c) => [c, true])));
     setErrores(nuevos);
@@ -103,6 +110,7 @@ export default function PedidoFormModal({ pedido, zonas, onCerrar, onGuardado })
     setGuardando(true);
     try {
       if (editando) await actualizarPedido(pedido.id, cuerpo);
+      else if (eligeNegocio) await crearPedidoAdmin(datos.negocioId, cuerpo);
       else await crearPedido(cuerpo);
       onGuardado(editando ? `El pedido #${pedido.id} se actualizó correctamente.` : 'El pedido se creó correctamente.');
     } catch (err) {
@@ -128,6 +136,15 @@ export default function PedidoFormModal({ pedido, zonas, onCerrar, onGuardado })
       }
     >
       <form id="form-pedido" className="form-vertical" onSubmit={enviar} noValidate>
+        {eligeNegocio ? (
+          <Field as="select" label="Negocio" name="negocioId" value={datos.negocioId} onChange={cambiar} onBlur={salir}
+            error={errores.negocioId}>
+            <option value="">Elige un negocio</option>
+            {negocios.map((n) => (
+              <option key={n.id} value={n.id}>{n.nombre}</option>
+            ))}
+          </Field>
+        ) : null}
         <Field label="Nombre del cliente" name="clienteNombre" value={datos.clienteNombre} onChange={cambiar}
           onBlur={salir} error={errores.clienteNombre} />
         <div className="form-2col">

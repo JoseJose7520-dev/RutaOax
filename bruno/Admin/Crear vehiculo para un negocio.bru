@@ -1,0 +1,41 @@
+meta {
+  name: Crear vehiculo para un negocio
+  type: http
+  seq: 31
+}
+
+post {
+  url: {{baseUrl}}/admin/vehiculos?negocioId={{negocioAdminId}}
+  body: json
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{tokenAdmin}}
+}
+
+body:json {
+  {
+    "tipo": "BICICLETA",
+    "placa": "{{placaAdmin}}",
+    "capacidad": 5,
+    "estado": "ACTIVO"
+  }
+}
+
+vars:post-response {
+  vehiculoAdminId: res.body.id
+}
+
+script:pre-request {
+  bru.setVar("placaAdmin", "ADM-" + String(Date.now()).slice(-6));
+}
+
+assert {
+  res.status: eq 201
+  res.body.negocio.id: isNumber
+}
+
+docs {
+  La placa se genera en el pre-request para que la prueba se pueda repetir.
+}

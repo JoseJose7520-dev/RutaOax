@@ -45,6 +45,11 @@ Base: `/api`. JSON en UTF-8. Todas las rutas requieren `Authorization: Bearer <t
 - PUT `/admin/usuarios/{id}` `{ nombre*, email*, telefono, nuevaPassword }` → usuario (la contraseña solo cambia si se manda)
 - PATCH `/admin/usuarios/{id}/activo` `{ activo* }` → usuario. 409 si es tu propia cuenta o el único ADMIN activo
 - DELETE `/admin/usuarios/{id}` → 204. 409 si es tu propia cuenta, el único ADMIN, o si la cuenta tiene pedidos o recorridos (en ese caso se desactiva)
+- GET `/admin/negocios` → `[{ id, nombre }]` (para filtros y formularios)
+- GET `/admin/pedidos?negocioId=&q=&estado=&zona=&modalidad=&page=&size=` → página de `PedidoDTO` de todos los negocios
+- POST `/admin/pedidos?negocioId=` `PedidoRequest` → 201 (404 si el negocio no existe; 400 si falta negocioId). Editar y eliminar: PUT y DELETE `/pedidos/{id}`, que aceptan al ADMIN
+- GET `/admin/vehiculos?negocioId=&q=&tipo=&estado=&page=&size=` → página de `VehiculoDTO` (incluye `negocio { id, nombre }`)
+- POST `/admin/vehiculos?negocioId=` `VehiculoRequest` → 201 (409 si la placa ya existe). Editar y eliminar: PUT y DELETE `/vehiculos/{id}`
 - GET `/admin/notificaciones?canal=&estado=&page=&size=` → página de `{ id, canal, destino, evento, estado, detalle, creadoEn }`
 - POST `/admin/notificaciones/prueba` `{ canal*, destino* }` → 200 `{ estado, detalle }` (envía un mensaje de prueba real; sirve para verificar configuración)
 

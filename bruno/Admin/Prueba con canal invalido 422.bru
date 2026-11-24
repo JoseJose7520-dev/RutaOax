@@ -1,0 +1,31 @@
+meta {
+  name: Prueba con canal invalido 422
+  type: http
+  seq: 35
+}
+
+post {
+  url: {{baseUrl}}/admin/notificaciones/prueba
+  body: json
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{tokenAdmin}}
+}
+
+body:json {
+  {
+    "canal": "FAX",
+    "destino": ""
+  }
+}
+
+assert {
+  res.status: eq 422
+  res.body.errores.canal: isDefined
+}
+
+docs {
+  No envia nada: la validacion falla antes.
+}

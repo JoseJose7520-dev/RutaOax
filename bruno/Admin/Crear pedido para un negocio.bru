@@ -1,0 +1,37 @@
+meta {
+  name: Crear pedido para un negocio
+  type: http
+  seq: 24
+}
+
+post {
+  url: {{baseUrl}}/admin/pedidos?negocioId={{negocioAdminId}}
+  body: json
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{tokenAdmin}}
+}
+
+body:json {
+  {
+    "clienteNombre": "Pedido del admin",
+    "clienteTelefono": "9511147148",
+    "direccion": "Calle Macedonio Alcalá 100",
+    "zona": "Centro Histórico",
+    "articulos": 2,
+    "total": 180.5,
+    "modalidad": "NEGOCIO"
+  }
+}
+
+vars:post-response {
+  pedidoAdminId: res.body.id
+}
+
+assert {
+  res.status: eq 201
+  res.body.estado: eq PENDIENTE
+  res.body.negocio.id: isNumber
+}

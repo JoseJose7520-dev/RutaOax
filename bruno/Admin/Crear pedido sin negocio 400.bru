@@ -1,0 +1,33 @@
+meta {
+  name: Crear pedido sin negocio 400
+  type: http
+  seq: 25
+}
+
+post {
+  url: {{baseUrl}}/admin/pedidos
+  body: json
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{tokenAdmin}}
+}
+
+body:json {
+  {
+    "clienteNombre": "Sin negocio",
+    "direccion": "Calle 1",
+    "zona": "Centro Histórico",
+    "articulos": 1,
+    "total": 10
+  }
+}
+
+assert {
+  res.status: eq 400
+}
+
+docs {
+  Falta el parametro negocioId.
+}

@@ -4,6 +4,7 @@ import { actualizarVehiculo, crearVehiculo } from '../../api/vehiculosApi';
 import Field from '../../components/ui/Field';
 import { Mensaje } from '../../components/ui/Feedback';
 import Modal from '../../components/ui/Modal';
+import { crearVehiculoAdmin } from '../../api/adminApi';
 import { ETIQUETA_TIPO_VEHICULO } from '../../utils/format';
 
 function validar(campo, valor) {
@@ -22,19 +23,24 @@ function validar(campo, valor) {
     }
     case 'estado':
       return valor ? '' : 'Elige el estado del vehículo';
+    case 'negocioId':
+      return valor ? '' : 'Elige el negocio';
     default:
       return '';
   }
 }
 
-export default function VehiculoFormModal({ vehiculo, onCerrar, onGuardado }) {
+// negocios: solo lo manda el administrador; al crear, elige a que negocio pertenece el vehiculo
+export default function VehiculoFormModal({ vehiculo, negocios, onCerrar, onGuardado }) {
   const editando = Boolean(vehiculo);
+  const eligeNegocio = Boolean(negocios) && !editando;
   const [datos, setDatos] = useState({
     tipo: vehiculo?.tipo ?? 'MOTOCICLETA',
     placa: vehiculo?.placa ?? '',
     capacidad: String(vehiculo?.capacidad ?? 10),
     estado: vehiculo?.estado ?? 'ACTIVO',
     seguroVence: vehiculo?.seguroVence ?? '',
+    negocioId: '',
   });
   const [tocados, setTocados] = useState({});
   const [errores, setErrores] = useState({});
@@ -55,7 +61,7 @@ export default function VehiculoFormModal({ vehiculo, onCerrar, onGuardado }) {
 
   const enviar = async (e) => {
     e.preventDefault();
-    const campos = ['tipo', 'placa', 'capacidad', 'estado'];
+    const campos = ['tipo', 'placa', 'capacidad', 'estado', ...(eligeNegocio ? ['negocioId'] : [])];
     const nuevos = {};
     campos.forEach((c) => {
       nuevos[c] = validar(c, datos[c]);
@@ -75,6 +81,7 @@ export default function VehiculoFormModal({ vehiculo, onCerrar, onGuardado }) {
     setGuardando(true);
     try {
       if (editando) await actualizarVehiculo(vehiculo.id, cuerpo);
+      else if (eligeNegocio) await crearVehiculoAdmin(datos.negocioId, cuerpo);
       else await crearVehiculo(cuerpo);
       onGuardado(editando ? 'El vehículo se actualizó correctamente.' : 'El vehículo se registró correctamente.');
     } catch (err) {
@@ -102,6 +109,15 @@ export default function VehiculoFormModal({ vehiculo, onCerrar, onGuardado }) {
       }
     >
       <form id="form-vehiculo" className="form-vertical" onSubmit={enviar} noValidate>
+        {eligeNegocio ? (
+          <Field as="select" label="Negocio" name="negocioId" value={datos.negocioId} onChange={cambiar} onBlur={salir}
+            error={errores.negocioId}>
+            <option value="">Elige un negocio</option>
+            {negocios.map((n) => (
+              <option key={n.id} value={n.id}>{n.nombre}</option>
+            ))}
+          </Field>
+        ) : null}
         <Field as="select" label="Tipo de vehículo" name="tipo" value={datos.tipo} onChange={cambiar} onBlur={salir}
           error={errores.tipo}>
           {Object.entries(ETIQUETA_TIPO_VEHICULO).map(([valor, texto]) => (

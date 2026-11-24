@@ -1,0 +1,29 @@
+meta {
+  name: Crear pedido negocio inexistente 404
+  type: http
+  seq: 27
+}
+
+post {
+  url: {{baseUrl}}/admin/pedidos?negocioId=999999
+  body: json
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{tokenAdmin}}
+}
+
+body:json {
+  {
+    "clienteNombre": "Nadie",
+    "direccion": "Calle 1",
+    "zona": "Centro Histórico",
+    "articulos": 1,
+    "total": 10
+  }
+}
+
+assert {
+  res.status: eq 404
+}

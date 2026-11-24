@@ -1,0 +1,21 @@
+meta {
+  name: Vehiculos de todos
+  type: http
+  seq: 30
+}
+
+get {
+  url: {{baseUrl}}/admin/vehiculos?page=0&size=10
+  body: none
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{tokenAdmin}}
+}
+
+assert {
+  res.status: eq 200
+  res.body.totalElements: gt 0
+  res.body.content[0].negocio.nombre: isString
+}

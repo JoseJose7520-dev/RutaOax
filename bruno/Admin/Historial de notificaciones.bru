@@ -1,0 +1,20 @@
+meta {
+  name: Historial de notificaciones
+  type: http
+  seq: 34
+}
+
+get {
+  url: {{baseUrl}}/admin/notificaciones?canal=EMAIL&page=0&size=5
+  body: none
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{tokenAdmin}}
+}
+
+assert {
+  res.status: eq 200
+  res.body.content: isArray
+}
