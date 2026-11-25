@@ -1,0 +1,12 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1240 400" width="1240" height="400">
+  <g transform="translate(24 24) scale(0.6875)">
+  <!-- Logo de RutaOax -->
+  <circle cx="256" cy="256" r="232" fill="#F5F0E6"/>
+  <path d="M104 352 H184 V272 H264 V192 H344 V136" fill="none" stroke="#2F5BD0" stroke-width="40" stroke-linecap="round" stroke-linejoin="round"/>
+  <circle cx="104" cy="352" r="26" fill="#1C2B4D"/>
+  <path d="M344 72c-30.9 0-56 24.2-56 54 0 38.6 56 90 56 90s56-51.4 56-90c0-29.8-25.1-54-56-54z" fill="#E8A23A"/>
+  <circle cx="344" cy="126" r="20" fill="#FFFFFF"/>
+</g>
+  <text x="420" y="238" font-family="Poppins, Montserrat, Arial, sans-serif" font-size="150" font-weight="700" fill="#1C2B4D">Ruta<tspan fill="#2F5BD0">Oax</tspan></text>
+  <text x="426" y="306" font-family="Poppins, Montserrat, Arial, sans-serif" font-size="40" font-weight="500" fill="#6B7180" letter-spacing="2">Entregas en Oaxaca</text>
+</svg>
