@@ -238,3 +238,88 @@ para usar las prubebas abre bruno y se elcciona en abrir coleccion, busca en don
 ![alt text](img/pruebas_bruno/prueba_login_admin.png)
 
 ![alt text](img/pruebas_bruno/registro_usuario.png)
+
+# Información para la evaluación
+
+| | |
+|---|---|
+| **Sitio (HTTPS)** | https://rutaoax.devs8.tech |
+| **URL base de la API** | https://rutaoax.devs8.tech/api |
+| **Tablero de GitHub Projects** | https://github.com/users/JoseJose7520-dev/projects/4 |
+| **Prototipo en Figma** | https://www.figma.com/design/K1VaaQSKUMMfZGb8G0xqos/RutaSur-Log%C3%ADstica---Mockup?node-id=0-1&p=f&t=v7RFA644sc3QjSh8-0 |
+
+## Credenciales de prueba
+
+**Cuenta de evaluación del administrador** (se crea siempre al arrancar, con datos propios para revisar sin afectar a los demás):
+
+| Correo | Contraseña |
+|---|---|
+| `admin@rutaoax.com` | `Admin#2026` |
+
+Las demás cuentas de prueba usan la contraseña **`Ruta#2026`**:
+
+| Rol | Correo | Datos de ejemplo |
+|---|---|---|
+| Negocio | `negocio1@rutaoax.com` | Dulces del Valle, con pedidos, equipo, vehículos y recorridos |
+| Negocio | `negocio2@rutaoax.com` | La Espiga |
+| Repartidor de empresa | `repartidor1@rutaoax.com` | Tiene ruta asignada para hoy |
+| Repartidor independiente | `independiente1@rutaoax.com` | Tiene entregas tomadas y mensajes |
+| Cliente | `cliente1@rutaoax.com` | Tiene pedidos con seguimiento y mensajes |
+
+Hay más cuentas: `negocio3` a `negocio10`, `repartidor2` a `repartidor12`, `independiente2` y `cliente2` a `cliente4`, todas `@rutaoax.com` con `Ruta#2026`.
+
+## Tecnologías
+
+| Parte | Tecnología |
+|---|---|
+| Backend | Java 21, Spring Boot 3.5, Spring Security, JWT (jjwt), Spring Data JPA / Hibernate, Bean Validation, JavaMailSender |
+| Base de datos | MySQL 8, migraciones con Flyway |
+| Frontend | React 18, Vite, React Router, Axios, Leaflet (mapas con OpenStreetMap) |
+| Comunicación | Postfix + OpenDKIM en el VPS (correo), Twilio (SMS), WhatsApp Cloud API de Meta (WhatsApp) |
+| Servidor | VPS Ubuntu, Nginx, Let's Encrypt con Certbot, systemd |
+| Pruebas de API | Bruno |
+| Diseño y gestión | Figma, GitHub Projects |
+
+## Despliegue en el VPS
+
+Todo corre en el VPS propio del equipo, sin plataformas externas:
+
+- **Backend:** JAR de Spring Boot ejecutado por el servicio de systemd `rutaoax` (`deploy/rutaoax.service`), con la configuración real fuera del repositorio en `/opt/rutaoax/config/application.properties`.
+- **Frontend:** build estático de Vite servido por Nginx desde `/var/www/rutaoax`.
+- **Nginx** (`deploy/nginx-rutaoax.conf`) sirve el frontend y redirige `/api` al backend.
+- **HTTPS** con certificado gratuito de Let's Encrypt generado con Certbot en el propio VPS.
+- **MySQL 8** en el mismo servidor.
+
+Para publicar una nueva versión desde Windows: `.\deploy\deploy.ps1` (compila el JAR y el frontend, los sube con `scp` y reinicia el servicio). La preparación inicial del servidor está en `deploy/preparar-servidor.sh`.
+
+## Comunicación con el usuario
+
+| Evento | Canal | Cómo |
+|---|---|---|
+| Registro de cuenta, recuperación de contraseña | Correo | JavaMailSender hacia Postfix en el propio VPS (`localhost:25`) |
+| El repartidor inicia su recorrido (pedido en camino) | SMS | API de Twilio |
+| Pedido entregado | WhatsApp + correo | WhatsApp Cloud API de Meta y Postfix |
+| Pedido no entregado (con motivo) | WhatsApp | WhatsApp Cloud API de Meta |
+
+- **Correo:** Postfix configurado solo para envío, firmado con OpenDKIM. El dominio `devs8.tech` tiene registros **SPF**, **DKIM** (selector `mail`) y **DMARC**; Gmail los marca como PASS y los correos llegan a la bandeja de entrada.
+- Los avisos se envían de forma asíncrona (`@Async`) después de confirmar la transacción, para que una falla externa no deshaga la entrega.
+- Cada envío queda registrado en `notificaciones_log` (ENVIADO o FALLIDO), y el administrador lo consulta en *Notificaciones*.
+
+## Seguridad
+
+- Contraseñas guardadas con **BCrypt**. La contraseña pide mínimo 8 caracteres, una mayúscula, un número y un carácter especial; se valida bajo el campo en React y con la anotación `@PasswordSegura` (Bean Validation) en el backend.
+- **JWT** en el header `Authorization: Bearer <token>` de cada petición protegida. El logout revoca el token (`tokens_revocados`). La recuperación de contraseña usa un token de un solo uso con vencimiento.
+- **Autorización por rol** en `SecurityConfig` y con `@PreAuthorize`. En React, `RoleRoute` protege las rutas y el menú cambia según el rol.
+- Errores en JSON con su código correcto (400, 401, 403, 404, 409, 422 y 500) desde `GlobalExceptionHandler` (`@ControllerAdvice`).
+- Todos los datos sensibles (JWT, base de datos, correo, Twilio, Meta) viven en `application.properties`, que no se sube. El repositorio solo incluye `application.properties.example`.
+
+## Pruebas de API con Bruno
+
+La colección está en la carpeta [`bruno/`](bruno) y tiene dos entornos: `local` y `produccion`.
+
+1. Abrir Bruno → *Open Collection* → elegir la carpeta `bruno`.
+2. Arriba a la derecha, elegir el entorno (`produccion` apunta a `https://rutaoax.devs8.tech/api`).
+3. Correr primero `Auth` (login de cada rol). El script de cada login guarda el token en una variable y las demás peticiones lo usan en *Auth → Bearer Token*.
+
+Incluye casos de error a propósito: sin token (401), rol sin permiso (403), recurso inexistente (404), datos duplicados (409), datos inválidos (422) y parámetros faltantes (400).
+

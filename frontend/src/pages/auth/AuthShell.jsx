@@ -2,6 +2,10 @@ export default function AuthShell({ children }) {
   return (
     <div className="entrada">
       <section className="hero">
+        <div className="hero-marca">
+          <img src="/logo.svg" alt="Logo de RutaOax" width="56" height="56" />
+          <span>RutaOax</span>
+        </div>
         <h1>Cada entrega, en su lugar.</h1>
         <p>Un solo sistema para negocios, repartidores y clientes de Oaxaca.</p>
       </section>
