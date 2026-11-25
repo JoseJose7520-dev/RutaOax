@@ -19,8 +19,7 @@ ul{list-style:none;margin:0;padding:0}
 .side{width:236px;background:var(--tinta);color:#c4cde4;padding:20px 14px;display:flex;flex-direction:column;gap:6px;position:sticky;top:0;height:100vh}
 .side.morado{background:#2a2147}
 .marca{display:flex;align-items:center;gap:10px;color:#fff;font-weight:700;font-size:1.1rem;padding:4px 8px 18px}
-.marca i{width:30px;height:30px;border-radius:9px;background:var(--azul);display:grid;place-items:center;font-style:normal;font-size:.9rem}
-.morado .marca i{background:var(--morado)}
+.marca img{width:34px;height:34px;flex:none}
 .side .rol{font-size:.72rem;letter-spacing:.08em;text-transform:uppercase;color:#8d9abd;padding:0 10px 6px}
 .side a{display:flex;align-items:center;gap:10px;padding:10px 12px;border-radius:9px;font-weight:500}
 .side a.on{background:rgba(255,255,255,.12);color:#fff}
@@ -171,3 +170,18 @@ input[type=checkbox],input[type=radio]{width:auto}
 .con-ojo .ojo{position:absolute;top:50%;right:6px;transform:translateY(-50%);width:36px;height:36px;border:0;background:transparent;color:var(--gris);border-radius:8px;display:grid;place-items:center;cursor:pointer}
 .con-ojo .ojo:hover{color:var(--tinta);background:rgba(0,0,0,.05)}
 .con-ojo .ojo:focus-visible{outline:2px solid var(--azul);outline-offset:1px}
+
+/* Logo en la pantalla de entrada */
+.hero-marca{display:flex;align-items:center;gap:12px;margin-bottom:28px;color:#fff;font-weight:700;font-size:1.5rem}
+.hero-marca img{width:56px;height:56px}
+
+/* Menu lateral en celular: se abre con el boton de la barra superior */
+.top-izq{display:flex;align-items:center;gap:12px}
+.btn-menu{display:none;width:40px;height:40px;border:1px solid var(--linea);border-radius:10px;background:transparent;color:var(--tinta);place-items:center;cursor:pointer}
+.velo{display:none}
+@media(max-width:900px){
+  .btn-menu{display:grid}
+  .top{padding:0 16px}
+  .side.abierto{display:flex;position:fixed;left:0;top:0;bottom:0;height:100%;z-index:60;box-shadow:0 0 40px rgba(0,0,0,.25);overflow-y:auto}
+  .velo{display:block;position:fixed;inset:0;background:rgba(15,20,35,.45);z-index:55}
+}

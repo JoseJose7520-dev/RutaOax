@@ -2,13 +2,14 @@ import { NavLink } from 'react-router-dom';
 import { useAuth } from '../../auth/AuthContext';
 import { esIndependiente, etiquetaRol, menuPara } from './menus';
 
-export default function Sidebar() {
+export default function Sidebar({ abierto = false }) {
   const { usuario } = useAuth();
   const items = menuPara(usuario);
   return (
-    <aside className={`side ${esIndependiente(usuario) ? 'morado' : ''}`}>
+    <aside id="menu-lateral" className={`side ${esIndependiente(usuario) ? 'morado' : ''} ${abierto ? 'abierto' : ''}`}>
       <div className="marca">
-        <i>R</i>RutaOax
+        <img src="/logo.svg" alt="" width="34" height="34" />
+        RutaOax
       </div>
       <p className="rol">{etiquetaRol(usuario)}</p>
       {items.map((item) => (
